@@ -1,0 +1,14 @@
+{
+	"backtraceGraph" : 
+	{
+		"commands" : [],
+		"files" : [],
+		"nodes" : []
+	},
+	"installers" : [],
+	"paths" : 
+	{
+		"build" : "esp-idf/esp_pm",
+		"source" : "C:/Users/Jimmy/.espressif/frameworks/esp-idf-v4.4.2/components/esp_pm"
+	}
+}

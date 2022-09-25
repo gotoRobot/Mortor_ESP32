@@ -1,0 +1,1688 @@
+{
+	"inputs" : 
+	[
+		{
+			"path" : "CMakeLists.txt"
+		},
+		{
+			"isExternal" : true,
+			"path" : "C:/Users/Jimmy/.espressif/frameworks/esp-idf-v4.4.2/tools/cmake/project.cmake"
+		},
+		{
+			"isExternal" : true,
+			"path" : "C:/Users/Jimmy/.espressif/frameworks/esp-idf-v4.4.2/tools/cmake/targets.cmake"
+		},
+		{
+			"isExternal" : true,
+			"path" : "C:/Users/Jimmy/.espressif/frameworks/esp-idf-v4.4.2/tools/cmake/idf.cmake"
+		},
+		{
+			"isExternal" : true,
+			"path" : "C:/Users/Jimmy/.espressif/frameworks/esp-idf-v4.4.2/tools/cmake/build.cmake"
+		},
+		{
+			"isExternal" : true,
+			"path" : "C:/Users/Jimmy/.espressif/frameworks/esp-idf-v4.4.2/tools/cmake/third_party/GetGitRevisionDescription.cmake"
+		},
+		{
+			"isExternal" : true,
+			"path" : "C:/Users/Jimmy/.espressif/frameworks/esp-idf-v4.4.2/tools/cmake/git_submodules.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "C:/Program Files/JetBrains/CLion 2022.1.3/bin/cmake/win/share/cmake-3.23/Modules/FindGit.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "C:/Program Files/JetBrains/CLion 2022.1.3/bin/cmake/win/share/cmake-3.23/Modules/FindPackageHandleStandardArgs.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "C:/Program Files/JetBrains/CLion 2022.1.3/bin/cmake/win/share/cmake-3.23/Modules/FindPackageMessage.cmake"
+		},
+		{
+			"isExternal" : true,
+			"path" : "C:/Users/Jimmy/.espressif/frameworks/esp-idf-v4.4.2/tools/cmake/crosstool_version_check.cmake"
+		},
+		{
+			"isExternal" : true,
+			"path" : "C:/Users/Jimmy/.espressif/frameworks/esp-idf-v4.4.2/tools/cmake/kconfig.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "C:/Program Files/JetBrains/CLion 2022.1.3/bin/cmake/win/share/cmake-3.23/Modules/ExternalProject.cmake"
+		},
+		{
+			"isExternal" : true,
+			"path" : "C:/Users/Jimmy/.espressif/frameworks/esp-idf-v4.4.2/tools/cmake/component.cmake"
+		},
+		{
+			"isExternal" : true,
+			"path" : "C:/Users/Jimmy/.espressif/frameworks/esp-idf-v4.4.2/tools/cmake/utilities.cmake"
+		},
+		{
+			"isExternal" : true,
+			"path" : "C:/Users/Jimmy/.espressif/frameworks/esp-idf-v4.4.2/tools/cmake/targets.cmake"
+		},
+		{
+			"isExternal" : true,
+			"path" : "C:/Users/Jimmy/.espressif/frameworks/esp-idf-v4.4.2/tools/cmake/ldgen.cmake"
+		},
+		{
+			"isExternal" : true,
+			"path" : "C:/Users/Jimmy/.espressif/frameworks/esp-idf-v4.4.2/tools/cmake/dfu.cmake"
+		},
+		{
+			"isExternal" : true,
+			"path" : "C:/Users/Jimmy/.espressif/frameworks/esp-idf-v4.4.2/tools/cmake/uf2.cmake"
+		},
+		{
+			"isExternal" : true,
+			"path" : "C:/Users/Jimmy/.espressif/frameworks/esp-idf-v4.4.2/tools/cmake/version.cmake"
+		},
+		{
+			"isExternal" : true,
+			"path" : "C:/Users/Jimmy/.espressif/frameworks/esp-idf-v4.4.2/.git/HEAD"
+		},
+		{
+			"isExternal" : true,
+			"path" : "C:/Users/Jimmy/.espressif/frameworks/esp-idf-v4.4.2/tools/cmake/third_party/GetGitRevisionDescription.cmake.in"
+		},
+		{
+			"isGenerated" : true,
+			"path" : "cmake-build-debug/CMakeFiles/git-data/grabRef.cmake"
+		},
+		{
+			"isExternal" : true,
+			"path" : "C:/Users/Jimmy/.espressif/frameworks/esp-idf-v4.4.2/.git/HEAD"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "C:/Program Files/JetBrains/CLion 2022.1.3/bin/cmake/win/share/cmake-3.23/Modules/CMakeDetermineSystem.cmake"
+		},
+		{
+			"isExternal" : true,
+			"path" : "C:/Users/Jimmy/.espressif/frameworks/esp-idf-v4.4.2/tools/cmake/toolchain-esp32.cmake"
+		},
+		{
+			"isExternal" : true,
+			"path" : "C:/Users/Jimmy/.espressif/frameworks/esp-idf-v4.4.2/tools/cmake/utilities.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "C:/Program Files/JetBrains/CLion 2022.1.3/bin/cmake/win/share/cmake-3.23/Modules/CMakeSystem.cmake.in"
+		},
+		{
+			"isGenerated" : true,
+			"path" : "cmake-build-debug/CMakeFiles/3.23.2/CMakeSystem.cmake"
+		},
+		{
+			"isExternal" : true,
+			"path" : "C:/Users/Jimmy/.espressif/frameworks/esp-idf-v4.4.2/tools/cmake/toolchain-esp32.cmake"
+		},
+		{
+			"isExternal" : true,
+			"path" : "C:/Users/Jimmy/.espressif/frameworks/esp-idf-v4.4.2/tools/cmake/utilities.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "C:/Program Files/JetBrains/CLion 2022.1.3/bin/cmake/win/share/cmake-3.23/Modules/CMakeSystemSpecificInitialize.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "C:/Program Files/JetBrains/CLion 2022.1.3/bin/cmake/win/share/cmake-3.23/Modules/CMakeDetermineCCompiler.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "C:/Program Files/JetBrains/CLion 2022.1.3/bin/cmake/win/share/cmake-3.23/Modules/CMakeDetermineCompiler.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "C:/Program Files/JetBrains/CLion 2022.1.3/bin/cmake/win/share/cmake-3.23/Modules/CMakeDetermineCompilerId.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "C:/Program Files/JetBrains/CLion 2022.1.3/bin/cmake/win/share/cmake-3.23/Modules/CMakeCompilerIdDetection.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "C:/Program Files/JetBrains/CLion 2022.1.3/bin/cmake/win/share/cmake-3.23/Modules/Compiler/ADSP-DetermineCompiler.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "C:/Program Files/JetBrains/CLion 2022.1.3/bin/cmake/win/share/cmake-3.23/Modules/Compiler/ARMCC-DetermineCompiler.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "C:/Program Files/JetBrains/CLion 2022.1.3/bin/cmake/win/share/cmake-3.23/Modules/Compiler/ARMClang-DetermineCompiler.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "C:/Program Files/JetBrains/CLion 2022.1.3/bin/cmake/win/share/cmake-3.23/Modules/Compiler/AppleClang-DetermineCompiler.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "C:/Program Files/JetBrains/CLion 2022.1.3/bin/cmake/win/share/cmake-3.23/Modules/Compiler/Clang-DetermineCompilerInternal.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "C:/Program Files/JetBrains/CLion 2022.1.3/bin/cmake/win/share/cmake-3.23/Modules/Compiler/Borland-DetermineCompiler.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "C:/Program Files/JetBrains/CLion 2022.1.3/bin/cmake/win/share/cmake-3.23/Modules/Compiler/Bruce-C-DetermineCompiler.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "C:/Program Files/JetBrains/CLion 2022.1.3/bin/cmake/win/share/cmake-3.23/Modules/Compiler/Clang-DetermineCompiler.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "C:/Program Files/JetBrains/CLion 2022.1.3/bin/cmake/win/share/cmake-3.23/Modules/Compiler/Clang-DetermineCompilerInternal.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "C:/Program Files/JetBrains/CLion 2022.1.3/bin/cmake/win/share/cmake-3.23/Modules/Compiler/Compaq-C-DetermineCompiler.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "C:/Program Files/JetBrains/CLion 2022.1.3/bin/cmake/win/share/cmake-3.23/Modules/Compiler/Cray-DetermineCompiler.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "C:/Program Files/JetBrains/CLion 2022.1.3/bin/cmake/win/share/cmake-3.23/Modules/Compiler/Embarcadero-DetermineCompiler.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "C:/Program Files/JetBrains/CLion 2022.1.3/bin/cmake/win/share/cmake-3.23/Modules/Compiler/Fujitsu-DetermineCompiler.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "C:/Program Files/JetBrains/CLion 2022.1.3/bin/cmake/win/share/cmake-3.23/Modules/Compiler/FujitsuClang-DetermineCompiler.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "C:/Program Files/JetBrains/CLion 2022.1.3/bin/cmake/win/share/cmake-3.23/Modules/Compiler/GHS-DetermineCompiler.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "C:/Program Files/JetBrains/CLion 2022.1.3/bin/cmake/win/share/cmake-3.23/Modules/Compiler/GNU-C-DetermineCompiler.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "C:/Program Files/JetBrains/CLion 2022.1.3/bin/cmake/win/share/cmake-3.23/Modules/Compiler/HP-C-DetermineCompiler.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "C:/Program Files/JetBrains/CLion 2022.1.3/bin/cmake/win/share/cmake-3.23/Modules/Compiler/IAR-DetermineCompiler.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "C:/Program Files/JetBrains/CLion 2022.1.3/bin/cmake/win/share/cmake-3.23/Modules/Compiler/IBMClang-C-DetermineCompiler.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "C:/Program Files/JetBrains/CLion 2022.1.3/bin/cmake/win/share/cmake-3.23/Modules/Compiler/Intel-DetermineCompiler.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "C:/Program Files/JetBrains/CLion 2022.1.3/bin/cmake/win/share/cmake-3.23/Modules/Compiler/IntelLLVM-DetermineCompiler.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "C:/Program Files/JetBrains/CLion 2022.1.3/bin/cmake/win/share/cmake-3.23/Modules/Compiler/LCC-C-DetermineCompiler.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "C:/Program Files/JetBrains/CLion 2022.1.3/bin/cmake/win/share/cmake-3.23/Modules/Compiler/MSVC-DetermineCompiler.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "C:/Program Files/JetBrains/CLion 2022.1.3/bin/cmake/win/share/cmake-3.23/Modules/Compiler/NVHPC-DetermineCompiler.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "C:/Program Files/JetBrains/CLion 2022.1.3/bin/cmake/win/share/cmake-3.23/Modules/Compiler/NVIDIA-DetermineCompiler.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "C:/Program Files/JetBrains/CLion 2022.1.3/bin/cmake/win/share/cmake-3.23/Modules/Compiler/OpenWatcom-DetermineCompiler.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "C:/Program Files/JetBrains/CLion 2022.1.3/bin/cmake/win/share/cmake-3.23/Modules/Compiler/PGI-DetermineCompiler.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "C:/Program Files/JetBrains/CLion 2022.1.3/bin/cmake/win/share/cmake-3.23/Modules/Compiler/PathScale-DetermineCompiler.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "C:/Program Files/JetBrains/CLion 2022.1.3/bin/cmake/win/share/cmake-3.23/Modules/Compiler/SCO-DetermineCompiler.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "C:/Program Files/JetBrains/CLion 2022.1.3/bin/cmake/win/share/cmake-3.23/Modules/Compiler/SDCC-C-DetermineCompiler.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "C:/Program Files/JetBrains/CLion 2022.1.3/bin/cmake/win/share/cmake-3.23/Modules/Compiler/SunPro-C-DetermineCompiler.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "C:/Program Files/JetBrains/CLion 2022.1.3/bin/cmake/win/share/cmake-3.23/Modules/Compiler/TI-DetermineCompiler.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "C:/Program Files/JetBrains/CLion 2022.1.3/bin/cmake/win/share/cmake-3.23/Modules/Compiler/TinyCC-C-DetermineCompiler.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "C:/Program Files/JetBrains/CLion 2022.1.3/bin/cmake/win/share/cmake-3.23/Modules/Compiler/VisualAge-C-DetermineCompiler.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "C:/Program Files/JetBrains/CLion 2022.1.3/bin/cmake/win/share/cmake-3.23/Modules/Compiler/IBMCPP-C-DetermineVersionInternal.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "C:/Program Files/JetBrains/CLion 2022.1.3/bin/cmake/win/share/cmake-3.23/Modules/Compiler/Watcom-DetermineCompiler.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "C:/Program Files/JetBrains/CLion 2022.1.3/bin/cmake/win/share/cmake-3.23/Modules/Compiler/XL-C-DetermineCompiler.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "C:/Program Files/JetBrains/CLion 2022.1.3/bin/cmake/win/share/cmake-3.23/Modules/Compiler/IBMCPP-C-DetermineVersionInternal.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "C:/Program Files/JetBrains/CLion 2022.1.3/bin/cmake/win/share/cmake-3.23/Modules/Compiler/XLClang-C-DetermineCompiler.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "C:/Program Files/JetBrains/CLion 2022.1.3/bin/cmake/win/share/cmake-3.23/Modules/Compiler/zOS-C-DetermineCompiler.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "C:/Program Files/JetBrains/CLion 2022.1.3/bin/cmake/win/share/cmake-3.23/Modules/Compiler/IBMCPP-C-DetermineVersionInternal.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "C:/Program Files/JetBrains/CLion 2022.1.3/bin/cmake/win/share/cmake-3.23/Modules/CMakeFindBinUtils.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "C:/Program Files/JetBrains/CLion 2022.1.3/bin/cmake/win/share/cmake-3.23/Modules/Compiler/GNU-FindBinUtils.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "C:/Program Files/JetBrains/CLion 2022.1.3/bin/cmake/win/share/cmake-3.23/Modules/CMakeCCompiler.cmake.in"
+		},
+		{
+			"isGenerated" : true,
+			"path" : "cmake-build-debug/CMakeFiles/3.23.2/CMakeCCompiler.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "C:/Program Files/JetBrains/CLion 2022.1.3/bin/cmake/win/share/cmake-3.23/Modules/CMakeDetermineCXXCompiler.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "C:/Program Files/JetBrains/CLion 2022.1.3/bin/cmake/win/share/cmake-3.23/Modules/CMakeDetermineCompiler.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "C:/Program Files/JetBrains/CLion 2022.1.3/bin/cmake/win/share/cmake-3.23/Modules/CMakeDetermineCompilerId.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "C:/Program Files/JetBrains/CLion 2022.1.3/bin/cmake/win/share/cmake-3.23/Modules/CMakeCompilerIdDetection.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "C:/Program Files/JetBrains/CLion 2022.1.3/bin/cmake/win/share/cmake-3.23/Modules/Compiler/ADSP-DetermineCompiler.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "C:/Program Files/JetBrains/CLion 2022.1.3/bin/cmake/win/share/cmake-3.23/Modules/Compiler/ARMCC-DetermineCompiler.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "C:/Program Files/JetBrains/CLion 2022.1.3/bin/cmake/win/share/cmake-3.23/Modules/Compiler/ARMClang-DetermineCompiler.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "C:/Program Files/JetBrains/CLion 2022.1.3/bin/cmake/win/share/cmake-3.23/Modules/Compiler/AppleClang-DetermineCompiler.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "C:/Program Files/JetBrains/CLion 2022.1.3/bin/cmake/win/share/cmake-3.23/Modules/Compiler/Clang-DetermineCompilerInternal.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "C:/Program Files/JetBrains/CLion 2022.1.3/bin/cmake/win/share/cmake-3.23/Modules/Compiler/Borland-DetermineCompiler.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "C:/Program Files/JetBrains/CLion 2022.1.3/bin/cmake/win/share/cmake-3.23/Modules/Compiler/Clang-DetermineCompiler.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "C:/Program Files/JetBrains/CLion 2022.1.3/bin/cmake/win/share/cmake-3.23/Modules/Compiler/Clang-DetermineCompilerInternal.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "C:/Program Files/JetBrains/CLion 2022.1.3/bin/cmake/win/share/cmake-3.23/Modules/Compiler/Comeau-CXX-DetermineCompiler.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "C:/Program Files/JetBrains/CLion 2022.1.3/bin/cmake/win/share/cmake-3.23/Modules/Compiler/Compaq-CXX-DetermineCompiler.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "C:/Program Files/JetBrains/CLion 2022.1.3/bin/cmake/win/share/cmake-3.23/Modules/Compiler/Cray-DetermineCompiler.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "C:/Program Files/JetBrains/CLion 2022.1.3/bin/cmake/win/share/cmake-3.23/Modules/Compiler/Embarcadero-DetermineCompiler.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "C:/Program Files/JetBrains/CLion 2022.1.3/bin/cmake/win/share/cmake-3.23/Modules/Compiler/Fujitsu-DetermineCompiler.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "C:/Program Files/JetBrains/CLion 2022.1.3/bin/cmake/win/share/cmake-3.23/Modules/Compiler/FujitsuClang-DetermineCompiler.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "C:/Program Files/JetBrains/CLion 2022.1.3/bin/cmake/win/share/cmake-3.23/Modules/Compiler/GHS-DetermineCompiler.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "C:/Program Files/JetBrains/CLion 2022.1.3/bin/cmake/win/share/cmake-3.23/Modules/Compiler/GNU-CXX-DetermineCompiler.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "C:/Program Files/JetBrains/CLion 2022.1.3/bin/cmake/win/share/cmake-3.23/Modules/Compiler/HP-CXX-DetermineCompiler.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "C:/Program Files/JetBrains/CLion 2022.1.3/bin/cmake/win/share/cmake-3.23/Modules/Compiler/IAR-DetermineCompiler.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "C:/Program Files/JetBrains/CLion 2022.1.3/bin/cmake/win/share/cmake-3.23/Modules/Compiler/IBMClang-CXX-DetermineCompiler.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "C:/Program Files/JetBrains/CLion 2022.1.3/bin/cmake/win/share/cmake-3.23/Modules/Compiler/Intel-DetermineCompiler.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "C:/Program Files/JetBrains/CLion 2022.1.3/bin/cmake/win/share/cmake-3.23/Modules/Compiler/IntelLLVM-DetermineCompiler.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "C:/Program Files/JetBrains/CLion 2022.1.3/bin/cmake/win/share/cmake-3.23/Modules/Compiler/LCC-CXX-DetermineCompiler.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "C:/Program Files/JetBrains/CLion 2022.1.3/bin/cmake/win/share/cmake-3.23/Modules/Compiler/MSVC-DetermineCompiler.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "C:/Program Files/JetBrains/CLion 2022.1.3/bin/cmake/win/share/cmake-3.23/Modules/Compiler/NVHPC-DetermineCompiler.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "C:/Program Files/JetBrains/CLion 2022.1.3/bin/cmake/win/share/cmake-3.23/Modules/Compiler/NVIDIA-DetermineCompiler.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "C:/Program Files/JetBrains/CLion 2022.1.3/bin/cmake/win/share/cmake-3.23/Modules/Compiler/OpenWatcom-DetermineCompiler.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "C:/Program Files/JetBrains/CLion 2022.1.3/bin/cmake/win/share/cmake-3.23/Modules/Compiler/PGI-DetermineCompiler.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "C:/Program Files/JetBrains/CLion 2022.1.3/bin/cmake/win/share/cmake-3.23/Modules/Compiler/PathScale-DetermineCompiler.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "C:/Program Files/JetBrains/CLion 2022.1.3/bin/cmake/win/share/cmake-3.23/Modules/Compiler/SCO-DetermineCompiler.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "C:/Program Files/JetBrains/CLion 2022.1.3/bin/cmake/win/share/cmake-3.23/Modules/Compiler/SunPro-CXX-DetermineCompiler.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "C:/Program Files/JetBrains/CLion 2022.1.3/bin/cmake/win/share/cmake-3.23/Modules/Compiler/TI-DetermineCompiler.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "C:/Program Files/JetBrains/CLion 2022.1.3/bin/cmake/win/share/cmake-3.23/Modules/Compiler/VisualAge-CXX-DetermineCompiler.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "C:/Program Files/JetBrains/CLion 2022.1.3/bin/cmake/win/share/cmake-3.23/Modules/Compiler/IBMCPP-CXX-DetermineVersionInternal.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "C:/Program Files/JetBrains/CLion 2022.1.3/bin/cmake/win/share/cmake-3.23/Modules/Compiler/Watcom-DetermineCompiler.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "C:/Program Files/JetBrains/CLion 2022.1.3/bin/cmake/win/share/cmake-3.23/Modules/Compiler/XL-CXX-DetermineCompiler.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "C:/Program Files/JetBrains/CLion 2022.1.3/bin/cmake/win/share/cmake-3.23/Modules/Compiler/IBMCPP-CXX-DetermineVersionInternal.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "C:/Program Files/JetBrains/CLion 2022.1.3/bin/cmake/win/share/cmake-3.23/Modules/Compiler/XLClang-CXX-DetermineCompiler.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "C:/Program Files/JetBrains/CLion 2022.1.3/bin/cmake/win/share/cmake-3.23/Modules/Compiler/zOS-CXX-DetermineCompiler.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "C:/Program Files/JetBrains/CLion 2022.1.3/bin/cmake/win/share/cmake-3.23/Modules/Compiler/IBMCPP-CXX-DetermineVersionInternal.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "C:/Program Files/JetBrains/CLion 2022.1.3/bin/cmake/win/share/cmake-3.23/Modules/CMakeFindBinUtils.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "C:/Program Files/JetBrains/CLion 2022.1.3/bin/cmake/win/share/cmake-3.23/Modules/Compiler/GNU-FindBinUtils.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "C:/Program Files/JetBrains/CLion 2022.1.3/bin/cmake/win/share/cmake-3.23/Modules/CMakeCXXCompiler.cmake.in"
+		},
+		{
+			"isGenerated" : true,
+			"path" : "cmake-build-debug/CMakeFiles/3.23.2/CMakeCXXCompiler.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "C:/Program Files/JetBrains/CLion 2022.1.3/bin/cmake/win/share/cmake-3.23/Modules/CMakeDetermineASMCompiler.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "C:/Program Files/JetBrains/CLion 2022.1.3/bin/cmake/win/share/cmake-3.23/Modules/CMakeDetermineCompiler.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "C:/Program Files/JetBrains/CLion 2022.1.3/bin/cmake/win/share/cmake-3.23/Modules/CMakeDetermineCompilerId.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "C:/Program Files/JetBrains/CLion 2022.1.3/bin/cmake/win/share/cmake-3.23/Modules/CMakeCompilerIdDetection.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "C:/Program Files/JetBrains/CLion 2022.1.3/bin/cmake/win/share/cmake-3.23/Modules/CMakeFindBinUtils.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "C:/Program Files/JetBrains/CLion 2022.1.3/bin/cmake/win/share/cmake-3.23/Modules/Compiler/GNU-FindBinUtils.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "C:/Program Files/JetBrains/CLion 2022.1.3/bin/cmake/win/share/cmake-3.23/Modules/CMakeASMCompiler.cmake.in"
+		},
+		{
+			"isGenerated" : true,
+			"path" : "cmake-build-debug/CMakeFiles/3.23.2/CMakeASMCompiler.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "C:/Program Files/JetBrains/CLion 2022.1.3/bin/cmake/win/share/cmake-3.23/Modules/CMakeSystemSpecificInformation.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "C:/Program Files/JetBrains/CLion 2022.1.3/bin/cmake/win/share/cmake-3.23/Modules/CMakeGenericSystem.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "C:/Program Files/JetBrains/CLion 2022.1.3/bin/cmake/win/share/cmake-3.23/Modules/CMakeInitializeConfigs.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "C:/Program Files/JetBrains/CLion 2022.1.3/bin/cmake/win/share/cmake-3.23/Modules/Platform/Generic.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "C:/Program Files/JetBrains/CLion 2022.1.3/bin/cmake/win/share/cmake-3.23/Modules/CMakeCInformation.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "C:/Program Files/JetBrains/CLion 2022.1.3/bin/cmake/win/share/cmake-3.23/Modules/CMakeLanguageInformation.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "C:/Program Files/JetBrains/CLion 2022.1.3/bin/cmake/win/share/cmake-3.23/Modules/Compiler/GNU-C.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "C:/Program Files/JetBrains/CLion 2022.1.3/bin/cmake/win/share/cmake-3.23/Modules/Compiler/GNU.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "C:/Program Files/JetBrains/CLion 2022.1.3/bin/cmake/win/share/cmake-3.23/Modules/Compiler/CMakeCommonCompilerMacros.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "C:/Program Files/JetBrains/CLion 2022.1.3/bin/cmake/win/share/cmake-3.23/Modules/Platform/Generic.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "C:/Program Files/JetBrains/CLion 2022.1.3/bin/cmake/win/share/cmake-3.23/Modules/CMakeCommonLanguageInclude.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "C:/Program Files/JetBrains/CLion 2022.1.3/bin/cmake/win/share/cmake-3.23/Modules/CMakeTestCCompiler.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "C:/Program Files/JetBrains/CLion 2022.1.3/bin/cmake/win/share/cmake-3.23/Modules/CMakeTestCompilerCommon.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "C:/Program Files/JetBrains/CLion 2022.1.3/bin/cmake/win/share/cmake-3.23/Modules/CMakeDetermineCompilerABI.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "C:/Program Files/JetBrains/CLion 2022.1.3/bin/cmake/win/share/cmake-3.23/Modules/CMakeParseImplicitIncludeInfo.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "C:/Program Files/JetBrains/CLion 2022.1.3/bin/cmake/win/share/cmake-3.23/Modules/CMakeParseImplicitLinkInfo.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "C:/Program Files/JetBrains/CLion 2022.1.3/bin/cmake/win/share/cmake-3.23/Modules/CMakeParseLibraryArchitecture.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "C:/Program Files/JetBrains/CLion 2022.1.3/bin/cmake/win/share/cmake-3.23/Modules/CMakeTestCompilerCommon.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "C:/Program Files/JetBrains/CLion 2022.1.3/bin/cmake/win/share/cmake-3.23/Modules/CMakeCCompilerABI.c"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "C:/Program Files/JetBrains/CLion 2022.1.3/bin/cmake/win/share/cmake-3.23/Modules/CMakeDetermineCompileFeatures.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "C:/Program Files/JetBrains/CLion 2022.1.3/bin/cmake/win/share/cmake-3.23/Modules/Internal/FeatureTesting.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "C:/Program Files/JetBrains/CLion 2022.1.3/bin/cmake/win/share/cmake-3.23/Modules/CMakeCCompiler.cmake.in"
+		},
+		{
+			"isGenerated" : true,
+			"path" : "cmake-build-debug/CMakeFiles/3.23.2/CMakeCCompiler.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "C:/Program Files/JetBrains/CLion 2022.1.3/bin/cmake/win/share/cmake-3.23/Modules/CMakeCXXInformation.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "C:/Program Files/JetBrains/CLion 2022.1.3/bin/cmake/win/share/cmake-3.23/Modules/CMakeLanguageInformation.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "C:/Program Files/JetBrains/CLion 2022.1.3/bin/cmake/win/share/cmake-3.23/Modules/Compiler/GNU-CXX.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "C:/Program Files/JetBrains/CLion 2022.1.3/bin/cmake/win/share/cmake-3.23/Modules/Compiler/GNU.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "C:/Program Files/JetBrains/CLion 2022.1.3/bin/cmake/win/share/cmake-3.23/Modules/Platform/Generic.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "C:/Program Files/JetBrains/CLion 2022.1.3/bin/cmake/win/share/cmake-3.23/Modules/CMakeCommonLanguageInclude.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "C:/Program Files/JetBrains/CLion 2022.1.3/bin/cmake/win/share/cmake-3.23/Modules/CMakeTestCXXCompiler.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "C:/Program Files/JetBrains/CLion 2022.1.3/bin/cmake/win/share/cmake-3.23/Modules/CMakeTestCompilerCommon.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "C:/Program Files/JetBrains/CLion 2022.1.3/bin/cmake/win/share/cmake-3.23/Modules/CMakeDetermineCompilerABI.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "C:/Program Files/JetBrains/CLion 2022.1.3/bin/cmake/win/share/cmake-3.23/Modules/CMakeParseImplicitIncludeInfo.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "C:/Program Files/JetBrains/CLion 2022.1.3/bin/cmake/win/share/cmake-3.23/Modules/CMakeParseImplicitLinkInfo.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "C:/Program Files/JetBrains/CLion 2022.1.3/bin/cmake/win/share/cmake-3.23/Modules/CMakeParseLibraryArchitecture.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "C:/Program Files/JetBrains/CLion 2022.1.3/bin/cmake/win/share/cmake-3.23/Modules/CMakeTestCompilerCommon.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "C:/Program Files/JetBrains/CLion 2022.1.3/bin/cmake/win/share/cmake-3.23/Modules/CMakeCXXCompilerABI.cpp"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "C:/Program Files/JetBrains/CLion 2022.1.3/bin/cmake/win/share/cmake-3.23/Modules/CMakeDetermineCompileFeatures.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "C:/Program Files/JetBrains/CLion 2022.1.3/bin/cmake/win/share/cmake-3.23/Modules/Internal/FeatureTesting.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "C:/Program Files/JetBrains/CLion 2022.1.3/bin/cmake/win/share/cmake-3.23/Modules/CMakeCXXCompiler.cmake.in"
+		},
+		{
+			"isGenerated" : true,
+			"path" : "cmake-build-debug/CMakeFiles/3.23.2/CMakeCXXCompiler.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "C:/Program Files/JetBrains/CLion 2022.1.3/bin/cmake/win/share/cmake-3.23/Modules/CMakeASMInformation.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "C:/Program Files/JetBrains/CLion 2022.1.3/bin/cmake/win/share/cmake-3.23/Modules/Compiler/GNU-ASM.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "C:/Program Files/JetBrains/CLion 2022.1.3/bin/cmake/win/share/cmake-3.23/Modules/Compiler/GNU.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "C:/Program Files/JetBrains/CLion 2022.1.3/bin/cmake/win/share/cmake-3.23/Modules/CMakeTestASMCompiler.cmake"
+		},
+		{
+			"isExternal" : true,
+			"path" : "C:/Users/Jimmy/.espressif/frameworks/esp-idf-v4.4.2/tools/kconfig_new/config.env.in"
+		},
+		{
+			"isGenerated" : true,
+			"path" : "cmake-build-debug/config/sdkconfig.cmake"
+		},
+		{
+			"isGenerated" : true,
+			"path" : "cmake-build-debug/config/sdkconfig.cmake"
+		},
+		{
+			"isExternal" : true,
+			"path" : "C:/Users/Jimmy/.espressif/frameworks/esp-idf-v4.4.2/components/bootloader/project_include.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "C:/Program Files/JetBrains/CLion 2022.1.3/bin/cmake/win/share/cmake-3.23/Modules/ExternalProject/mkdirs.cmake.in"
+		},
+		{
+			"isGenerated" : true,
+			"path" : "cmake-build-debug/bootloader-prefix/tmp/bootloader-mkdirs.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "C:/Program Files/JetBrains/CLion 2022.1.3/bin/cmake/win/share/cmake-3.23/Modules/ExternalProject/RepositoryInfo.txt.in"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "C:/Program Files/JetBrains/CLion 2022.1.3/bin/cmake/win/share/cmake-3.23/Modules/ExternalProject/cfgcmd.txt.in"
+		},
+		{
+			"isExternal" : true,
+			"path" : "C:/Users/Jimmy/.espressif/frameworks/esp-idf-v4.4.2/components/esptool_py/project_include.cmake"
+		},
+		{
+			"isExternal" : true,
+			"path" : "C:/Users/Jimmy/.espressif/frameworks/esp-idf-v4.4.2/components/partition_table/project_include.cmake"
+		},
+		{
+			"isExternal" : true,
+			"path" : "C:/Users/Jimmy/.espressif/frameworks/esp-idf-v4.4.2/components/esp_hw_support/project_include.cmake"
+		},
+		{
+			"isExternal" : true,
+			"path" : "C:/Users/Jimmy/.espressif/frameworks/esp-idf-v4.4.2/components/xtensa/project_include.cmake"
+		},
+		{
+			"isExternal" : true,
+			"path" : "C:/Users/Jimmy/.espressif/frameworks/esp-idf-v4.4.2/components/esp_common/project_include.cmake"
+		},
+		{
+			"isExternal" : true,
+			"path" : "C:/Users/Jimmy/.espressif/frameworks/esp-idf-v4.4.2/components/app_trace/project_include.cmake"
+		},
+		{
+			"isExternal" : true,
+			"path" : "C:/Users/Jimmy/.espressif/frameworks/esp-idf-v4.4.2/components/spiffs/project_include.cmake"
+		},
+		{
+			"isExternal" : true,
+			"path" : "C:/Users/Jimmy/.espressif/frameworks/esp-idf-v4.4.2/components/ulp/project_include.cmake"
+		},
+		{
+			"isGenerated" : true,
+			"path" : "cmake-build-debug/config/sdkconfig.cmake"
+		},
+		{
+			"isExternal" : true,
+			"path" : "C:/Users/Jimmy/.espressif/frameworks/esp-idf-v4.4.2/tools/cmake/project_description.json.in"
+		},
+		{
+			"isExternal" : true,
+			"path" : "C:/Users/Jimmy/.espressif/frameworks/esp-idf-v4.4.2/components/asio/asio/.git"
+		},
+		{
+			"isExternal" : true,
+			"path" : "C:/Users/Jimmy/.espressif/frameworks/esp-idf-v4.4.2/.git/modules/components/asio/asio/HEAD"
+		},
+		{
+			"isExternal" : true,
+			"path" : "C:/Users/Jimmy/.espressif/frameworks/esp-idf-v4.4.2/components/bootloader/subproject/components/micro-ecc/micro-ecc/.git"
+		},
+		{
+			"isExternal" : true,
+			"path" : "C:/Users/Jimmy/.espressif/frameworks/esp-idf-v4.4.2/.git/modules/components/bootloader/subproject/components/micro-ecc/micro-ecc/HEAD"
+		},
+		{
+			"isExternal" : true,
+			"path" : "C:/Users/Jimmy/.espressif/frameworks/esp-idf-v4.4.2/components/bt/controller/lib_esp32/.git"
+		},
+		{
+			"isExternal" : true,
+			"path" : "C:/Users/Jimmy/.espressif/frameworks/esp-idf-v4.4.2/.git/modules/components/bt/controller/lib_esp32/HEAD"
+		},
+		{
+			"isExternal" : true,
+			"path" : "C:/Users/Jimmy/.espressif/frameworks/esp-idf-v4.4.2/components/bt/controller/lib_esp32c3_family/.git"
+		},
+		{
+			"isExternal" : true,
+			"path" : "C:/Users/Jimmy/.espressif/frameworks/esp-idf-v4.4.2/.git/modules/components/bt/controller/lib_esp32c3_family/HEAD"
+		},
+		{
+			"isExternal" : true,
+			"path" : "C:/Users/Jimmy/.espressif/frameworks/esp-idf-v4.4.2/components/bt/host/nimble/nimble/.git"
+		},
+		{
+			"isExternal" : true,
+			"path" : "C:/Users/Jimmy/.espressif/frameworks/esp-idf-v4.4.2/.git/modules/components/bt/host/nimble/nimble/HEAD"
+		},
+		{
+			"isExternal" : true,
+			"path" : "C:/Users/Jimmy/.espressif/frameworks/esp-idf-v4.4.2/components/cbor/tinycbor/.git"
+		},
+		{
+			"isExternal" : true,
+			"path" : "C:/Users/Jimmy/.espressif/frameworks/esp-idf-v4.4.2/.git/modules/components/cbor/tinycbor/HEAD"
+		},
+		{
+			"isExternal" : true,
+			"path" : "C:/Users/Jimmy/.espressif/frameworks/esp-idf-v4.4.2/components/cmock/CMock/.git"
+		},
+		{
+			"isExternal" : true,
+			"path" : "C:/Users/Jimmy/.espressif/frameworks/esp-idf-v4.4.2/.git/modules/components/cmock/CMock/HEAD"
+		},
+		{
+			"isExternal" : true,
+			"path" : "C:/Users/Jimmy/.espressif/frameworks/esp-idf-v4.4.2/components/coap/libcoap/.git"
+		},
+		{
+			"isExternal" : true,
+			"path" : "C:/Users/Jimmy/.espressif/frameworks/esp-idf-v4.4.2/.git/modules/components/coap/libcoap/HEAD"
+		},
+		{
+			"isExternal" : true,
+			"path" : "C:/Users/Jimmy/.espressif/frameworks/esp-idf-v4.4.2/components/esp_phy/lib/.git"
+		},
+		{
+			"isExternal" : true,
+			"path" : "C:/Users/Jimmy/.espressif/frameworks/esp-idf-v4.4.2/.git/modules/components/esp_phy/lib/HEAD"
+		},
+		{
+			"isExternal" : true,
+			"path" : "C:/Users/Jimmy/.espressif/frameworks/esp-idf-v4.4.2/components/esp_wifi/lib/.git"
+		},
+		{
+			"isExternal" : true,
+			"path" : "C:/Users/Jimmy/.espressif/frameworks/esp-idf-v4.4.2/.git/modules/components/esp_wifi/lib/HEAD"
+		},
+		{
+			"isExternal" : true,
+			"path" : "C:/Users/Jimmy/.espressif/frameworks/esp-idf-v4.4.2/components/esptool_py/esptool/.git"
+		},
+		{
+			"isExternal" : true,
+			"path" : "C:/Users/Jimmy/.espressif/frameworks/esp-idf-v4.4.2/.git/modules/components/esptool_py/esptool/HEAD"
+		},
+		{
+			"isExternal" : true,
+			"path" : "C:/Users/Jimmy/.espressif/frameworks/esp-idf-v4.4.2/components/expat/expat/.git"
+		},
+		{
+			"isExternal" : true,
+			"path" : "C:/Users/Jimmy/.espressif/frameworks/esp-idf-v4.4.2/.git/modules/components/expat/expat/HEAD"
+		},
+		{
+			"isExternal" : true,
+			"path" : "C:/Users/Jimmy/.espressif/frameworks/esp-idf-v4.4.2/components/ieee802154/lib/.git"
+		},
+		{
+			"isExternal" : true,
+			"path" : "C:/Users/Jimmy/.espressif/frameworks/esp-idf-v4.4.2/.git/modules/components/ieee802154/lib/HEAD"
+		},
+		{
+			"isExternal" : true,
+			"path" : "C:/Users/Jimmy/.espressif/frameworks/esp-idf-v4.4.2/components/json/cJSON/.git"
+		},
+		{
+			"isExternal" : true,
+			"path" : "C:/Users/Jimmy/.espressif/frameworks/esp-idf-v4.4.2/.git/modules/components/json/cJSON/HEAD"
+		},
+		{
+			"isExternal" : true,
+			"path" : "C:/Users/Jimmy/.espressif/frameworks/esp-idf-v4.4.2/components/libsodium/libsodium/.git"
+		},
+		{
+			"isExternal" : true,
+			"path" : "C:/Users/Jimmy/.espressif/frameworks/esp-idf-v4.4.2/.git/modules/components/libsodium/libsodium/HEAD"
+		},
+		{
+			"isExternal" : true,
+			"path" : "C:/Users/Jimmy/.espressif/frameworks/esp-idf-v4.4.2/components/lwip/lwip/.git"
+		},
+		{
+			"isExternal" : true,
+			"path" : "C:/Users/Jimmy/.espressif/frameworks/esp-idf-v4.4.2/.git/modules/components/lwip/lwip/HEAD"
+		},
+		{
+			"isExternal" : true,
+			"path" : "C:/Users/Jimmy/.espressif/frameworks/esp-idf-v4.4.2/components/mbedtls/mbedtls/.git"
+		},
+		{
+			"isExternal" : true,
+			"path" : "C:/Users/Jimmy/.espressif/frameworks/esp-idf-v4.4.2/.git/modules/components/mbedtls/mbedtls/HEAD"
+		},
+		{
+			"isExternal" : true,
+			"path" : "C:/Users/Jimmy/.espressif/frameworks/esp-idf-v4.4.2/components/mqtt/esp-mqtt/.git"
+		},
+		{
+			"isExternal" : true,
+			"path" : "C:/Users/Jimmy/.espressif/frameworks/esp-idf-v4.4.2/.git/modules/components/mqtt/esp-mqtt/HEAD"
+		},
+		{
+			"isExternal" : true,
+			"path" : "C:/Users/Jimmy/.espressif/frameworks/esp-idf-v4.4.2/components/nghttp/nghttp2/.git"
+		},
+		{
+			"isExternal" : true,
+			"path" : "C:/Users/Jimmy/.espressif/frameworks/esp-idf-v4.4.2/.git/modules/components/nghttp/nghttp2/HEAD"
+		},
+		{
+			"isExternal" : true,
+			"path" : "C:/Users/Jimmy/.espressif/frameworks/esp-idf-v4.4.2/components/openthread/lib/.git"
+		},
+		{
+			"isExternal" : true,
+			"path" : "C:/Users/Jimmy/.espressif/frameworks/esp-idf-v4.4.2/.git/modules/components/openthread/lib/HEAD"
+		},
+		{
+			"isExternal" : true,
+			"path" : "C:/Users/Jimmy/.espressif/frameworks/esp-idf-v4.4.2/components/openthread/openthread/.git"
+		},
+		{
+			"isExternal" : true,
+			"path" : "C:/Users/Jimmy/.espressif/frameworks/esp-idf-v4.4.2/.git/modules/components/openthread/openthread/HEAD"
+		},
+		{
+			"isExternal" : true,
+			"path" : "C:/Users/Jimmy/.espressif/frameworks/esp-idf-v4.4.2/components/protobuf-c/protobuf-c/.git"
+		},
+		{
+			"isExternal" : true,
+			"path" : "C:/Users/Jimmy/.espressif/frameworks/esp-idf-v4.4.2/.git/modules/components/protobuf-c/protobuf-c/HEAD"
+		},
+		{
+			"isExternal" : true,
+			"path" : "C:/Users/Jimmy/.espressif/frameworks/esp-idf-v4.4.2/components/spiffs/spiffs/.git"
+		},
+		{
+			"isExternal" : true,
+			"path" : "C:/Users/Jimmy/.espressif/frameworks/esp-idf-v4.4.2/.git/modules/components/spiffs/spiffs/HEAD"
+		},
+		{
+			"isExternal" : true,
+			"path" : "C:/Users/Jimmy/.espressif/frameworks/esp-idf-v4.4.2/components/tinyusb/tinyusb/.git"
+		},
+		{
+			"isExternal" : true,
+			"path" : "C:/Users/Jimmy/.espressif/frameworks/esp-idf-v4.4.2/.git/modules/components/tinyusb/tinyusb/HEAD"
+		},
+		{
+			"isExternal" : true,
+			"path" : "C:/Users/Jimmy/.espressif/frameworks/esp-idf-v4.4.2/components/unity/unity/.git"
+		},
+		{
+			"isExternal" : true,
+			"path" : "C:/Users/Jimmy/.espressif/frameworks/esp-idf-v4.4.2/.git/modules/components/unity/unity/HEAD"
+		},
+		{
+			"isExternal" : true,
+			"path" : "C:/Users/Jimmy/.espressif/frameworks/esp-idf-v4.4.2/examples/build_system/cmake/import_lib/main/lib/tinyxml2/.git"
+		},
+		{
+			"isExternal" : true,
+			"path" : "C:/Users/Jimmy/.espressif/frameworks/esp-idf-v4.4.2/.git/modules/examples/build_system/cmake/import_lib/main/lib/tinyxml2/HEAD"
+		},
+		{
+			"isExternal" : true,
+			"path" : "C:/Users/Jimmy/.espressif/frameworks/esp-idf-v4.4.2/examples/peripherals/secure_element/atecc608_ecdsa/components/esp-cryptoauthlib/.git"
+		},
+		{
+			"isExternal" : true,
+			"path" : "C:/Users/Jimmy/.espressif/frameworks/esp-idf-v4.4.2/.git/modules/examples/peripherals/secure_element/atecc608_ecdsa/components/esp-cryptoauthlib/HEAD"
+		},
+		{
+			"path" : "sdkconfig"
+		},
+		{
+			"isGenerated" : true,
+			"path" : "cmake-build-debug/config/sdkconfig.h"
+		},
+		{
+			"isGenerated" : true,
+			"path" : "cmake-build-debug/config/sdkconfig.cmake"
+		},
+		{
+			"isExternal" : true,
+			"path" : "C:/Users/Jimmy/.espressif/frameworks/esp-idf-v4.4.2/tools/kconfig_new/confgen.py"
+		},
+		{
+			"isExternal" : true,
+			"path" : "C:/Users/Jimmy/.espressif/frameworks/esp-idf-v4.4.2/components/partition_table/partitions_singleapp.csv"
+		},
+		{
+			"isGenerated" : true,
+			"path" : "cmake-build-debug/flash_args.in"
+		},
+		{
+			"isGenerated" : true,
+			"path" : "cmake-build-debug/flash_args"
+		},
+		{
+			"isExternal" : true,
+			"path" : "C:/Users/Jimmy/.espressif/frameworks/esp-idf-v4.4.2/CMakeLists.txt"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "C:/Program Files/JetBrains/CLion 2022.1.3/bin/cmake/win/share/cmake-3.23/Modules/CMakeASMInformation.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "C:/Program Files/JetBrains/CLion 2022.1.3/bin/cmake/win/share/cmake-3.23/Modules/Compiler/GNU-ASM.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "C:/Program Files/JetBrains/CLion 2022.1.3/bin/cmake/win/share/cmake-3.23/Modules/Compiler/GNU.cmake"
+		},
+		{
+			"isExternal" : true,
+			"path" : "C:/Users/Jimmy/.espressif/frameworks/esp-idf-v4.4.2/components/esp_ringbuf/CMakeLists.txt"
+		},
+		{
+			"isExternal" : true,
+			"path" : "C:/Users/Jimmy/.espressif/frameworks/esp-idf-v4.4.2/components/efuse/CMakeLists.txt"
+		},
+		{
+			"isExternal" : true,
+			"path" : "C:/Users/Jimmy/.espressif/frameworks/esp-idf-v4.4.2/components/efuse/esp32/sources.cmake"
+		},
+		{
+			"isExternal" : true,
+			"path" : "C:/Users/Jimmy/.espressif/frameworks/esp-idf-v4.4.2/components/esp_ipc/CMakeLists.txt"
+		},
+		{
+			"isExternal" : true,
+			"path" : "C:/Users/Jimmy/.espressif/frameworks/esp-idf-v4.4.2/components/driver/CMakeLists.txt"
+		},
+		{
+			"isExternal" : true,
+			"path" : "C:/Users/Jimmy/.espressif/frameworks/esp-idf-v4.4.2/components/esp_pm/CMakeLists.txt"
+		},
+		{
+			"isExternal" : true,
+			"path" : "C:/Users/Jimmy/.espressif/frameworks/esp-idf-v4.4.2/components/mbedtls/CMakeLists.txt"
+		},
+		{
+			"isExternal" : true,
+			"path" : "C:/Users/Jimmy/.espressif/frameworks/esp-idf-v4.4.2/components/mbedtls/mbedtls/CMakeLists.txt"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "C:/Program Files/JetBrains/CLion 2022.1.3/bin/cmake/win/share/cmake-3.23/Modules/FindPython3.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "C:/Program Files/JetBrains/CLion 2022.1.3/bin/cmake/win/share/cmake-3.23/Modules/FindPython/Support.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "C:/Program Files/JetBrains/CLion 2022.1.3/bin/cmake/win/share/cmake-3.23/Modules/FindPackageHandleStandardArgs.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "C:/Program Files/JetBrains/CLion 2022.1.3/bin/cmake/win/share/cmake-3.23/Modules/FindPackageMessage.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "C:/Program Files/JetBrains/CLion 2022.1.3/bin/cmake/win/share/cmake-3.23/Modules/CheckCCompilerFlag.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "C:/Program Files/JetBrains/CLion 2022.1.3/bin/cmake/win/share/cmake-3.23/Modules/CheckCSourceCompiles.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "C:/Program Files/JetBrains/CLion 2022.1.3/bin/cmake/win/share/cmake-3.23/Modules/Internal/CheckSourceCompiles.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "C:/Program Files/JetBrains/CLion 2022.1.3/bin/cmake/win/share/cmake-3.23/Modules/Internal/CheckCompilerFlag.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "C:/Program Files/JetBrains/CLion 2022.1.3/bin/cmake/win/share/cmake-3.23/Modules/Internal/CheckFlagCommonConfig.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "C:/Program Files/JetBrains/CLion 2022.1.3/bin/cmake/win/share/cmake-3.23/Modules/Internal/CheckSourceCompiles.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "C:/Program Files/JetBrains/CLion 2022.1.3/bin/cmake/win/share/cmake-3.23/Modules/CMakeCheckCompilerFlagCommonPatterns.cmake"
+		},
+		{
+			"isExternal" : true,
+			"path" : "C:/Users/Jimmy/.espressif/frameworks/esp-idf-v4.4.2/components/mbedtls/mbedtls/include/CMakeLists.txt"
+		},
+		{
+			"isExternal" : true,
+			"path" : "C:/Users/Jimmy/.espressif/frameworks/esp-idf-v4.4.2/components/mbedtls/mbedtls/3rdparty/CMakeLists.txt"
+		},
+		{
+			"isExternal" : true,
+			"path" : "C:/Users/Jimmy/.espressif/frameworks/esp-idf-v4.4.2/components/mbedtls/mbedtls/library/CMakeLists.txt"
+		},
+		{
+			"isExternal" : true,
+			"path" : "C:/Users/Jimmy/.espressif/frameworks/esp-idf-v4.4.2/components/bootloader/CMakeLists.txt"
+		},
+		{
+			"isGenerated" : true,
+			"path" : "cmake-build-debug/esp-idf/bootloader/bootloader-flash_args.in"
+		},
+		{
+			"isGenerated" : true,
+			"path" : "cmake-build-debug/bootloader-flash_args"
+		},
+		{
+			"isExternal" : true,
+			"path" : "C:/Users/Jimmy/.espressif/frameworks/esp-idf-v4.4.2/components/esptool_py/CMakeLists.txt"
+		},
+		{
+			"isGenerated" : true,
+			"path" : "cmake-build-debug/esp-idf/esptool_py/app-flash_args.in"
+		},
+		{
+			"isGenerated" : true,
+			"path" : "cmake-build-debug/app-flash_args"
+		},
+		{
+			"isGenerated" : true,
+			"path" : "cmake-build-debug/esp-idf/esptool_py/flasher_args.json.in"
+		},
+		{
+			"isExternal" : true,
+			"path" : "C:/Users/Jimmy/.espressif/frameworks/esp-idf-v4.4.2/components/partition_table/CMakeLists.txt"
+		},
+		{
+			"isGenerated" : true,
+			"path" : "cmake-build-debug/esp-idf/partition_table/partition-table-flash_args.in"
+		},
+		{
+			"isExternal" : true,
+			"path" : "C:/Users/Jimmy/.espressif/frameworks/esp-idf-v4.4.2/components/app_update/CMakeLists.txt"
+		},
+		{
+			"isExternal" : true,
+			"path" : "C:/Users/Jimmy/.espressif/frameworks/esp-idf-v4.4.2/components/bootloader_support/CMakeLists.txt"
+		},
+		{
+			"isExternal" : true,
+			"path" : "C:/Users/Jimmy/.espressif/frameworks/esp-idf-v4.4.2/components/spi_flash/CMakeLists.txt"
+		},
+		{
+			"isExternal" : true,
+			"path" : "C:/Users/Jimmy/.espressif/frameworks/esp-idf-v4.4.2/components/nvs_flash/CMakeLists.txt"
+		},
+		{
+			"isExternal" : true,
+			"path" : "C:/Users/Jimmy/.espressif/frameworks/esp-idf-v4.4.2/components/pthread/CMakeLists.txt"
+		},
+		{
+			"isExternal" : true,
+			"path" : "C:/Users/Jimmy/.espressif/frameworks/esp-idf-v4.4.2/components/esp_gdbstub/CMakeLists.txt"
+		},
+		{
+			"isExternal" : true,
+			"path" : "C:/Users/Jimmy/.espressif/frameworks/esp-idf-v4.4.2/components/espcoredump/CMakeLists.txt"
+		},
+		{
+			"isExternal" : true,
+			"path" : "C:/Users/Jimmy/.espressif/frameworks/esp-idf-v4.4.2/components/esp_phy/CMakeLists.txt"
+		},
+		{
+			"isExternal" : true,
+			"path" : "C:/Users/Jimmy/.espressif/frameworks/esp-idf-v4.4.2/components/esp_system/CMakeLists.txt"
+		},
+		{
+			"isExternal" : true,
+			"path" : "C:/Users/Jimmy/.espressif/frameworks/esp-idf-v4.4.2/components/esp_system/ld/ld.cmake"
+		},
+		{
+			"isGenerated" : true,
+			"path" : "cmake-build-debug/ldgen_libraries.in"
+		},
+		{
+			"isExternal" : true,
+			"path" : "C:/Users/Jimmy/.espressif/frameworks/esp-idf-v4.4.2/components/esp_system/port/CMakeLists.txt"
+		},
+		{
+			"isExternal" : true,
+			"path" : "C:/Users/Jimmy/.espressif/frameworks/esp-idf-v4.4.2/components/esp_system/port/soc/esp32/CMakeLists.txt"
+		},
+		{
+			"isExternal" : true,
+			"path" : "C:/Users/Jimmy/.espressif/frameworks/esp-idf-v4.4.2/components/esp_rom/CMakeLists.txt"
+		},
+		{
+			"isExternal" : true,
+			"path" : "C:/Users/Jimmy/.espressif/frameworks/esp-idf-v4.4.2/components/hal/CMakeLists.txt"
+		},
+		{
+			"isExternal" : true,
+			"path" : "C:/Users/Jimmy/.espressif/frameworks/esp-idf-v4.4.2/components/vfs/CMakeLists.txt"
+		},
+		{
+			"isExternal" : true,
+			"path" : "C:/Users/Jimmy/.espressif/frameworks/esp-idf-v4.4.2/components/esp_eth/CMakeLists.txt"
+		},
+		{
+			"isExternal" : true,
+			"path" : "C:/Users/Jimmy/.espressif/frameworks/esp-idf-v4.4.2/components/tcpip_adapter/CMakeLists.txt"
+		},
+		{
+			"isExternal" : true,
+			"path" : "C:/Users/Jimmy/.espressif/frameworks/esp-idf-v4.4.2/components/esp_netif/CMakeLists.txt"
+		},
+		{
+			"isExternal" : true,
+			"path" : "C:/Users/Jimmy/.espressif/frameworks/esp-idf-v4.4.2/components/esp_event/CMakeLists.txt"
+		},
+		{
+			"isExternal" : true,
+			"path" : "C:/Users/Jimmy/.espressif/frameworks/esp-idf-v4.4.2/components/wpa_supplicant/CMakeLists.txt"
+		},
+		{
+			"isExternal" : true,
+			"path" : "C:/Users/Jimmy/.espressif/frameworks/esp-idf-v4.4.2/components/esp_wifi/CMakeLists.txt"
+		},
+		{
+			"isExternal" : true,
+			"path" : "C:/Users/Jimmy/.espressif/frameworks/esp-idf-v4.4.2/components/ieee802154/CMakeLists.txt"
+		},
+		{
+			"isExternal" : true,
+			"path" : "C:/Users/Jimmy/.espressif/frameworks/esp-idf-v4.4.2/components/console/CMakeLists.txt"
+		},
+		{
+			"isExternal" : true,
+			"path" : "C:/Users/Jimmy/.espressif/frameworks/esp-idf-v4.4.2/components/openthread/CMakeLists.txt"
+		},
+		{
+			"isExternal" : true,
+			"path" : "C:/Users/Jimmy/.espressif/frameworks/esp-idf-v4.4.2/components/lwip/CMakeLists.txt"
+		},
+		{
+			"isExternal" : true,
+			"path" : "C:/Users/Jimmy/.espressif/frameworks/esp-idf-v4.4.2/components/log/CMakeLists.txt"
+		},
+		{
+			"isExternal" : true,
+			"path" : "C:/Users/Jimmy/.espressif/frameworks/esp-idf-v4.4.2/components/heap/CMakeLists.txt"
+		},
+		{
+			"isExternal" : true,
+			"path" : "C:/Users/Jimmy/.espressif/frameworks/esp-idf-v4.4.2/components/soc/CMakeLists.txt"
+		},
+		{
+			"isExternal" : true,
+			"path" : "C:/Users/Jimmy/.espressif/frameworks/esp-idf-v4.4.2/components/soc/esp32/CMakeLists.txt"
+		},
+		{
+			"isExternal" : true,
+			"path" : "C:/Users/Jimmy/.espressif/frameworks/esp-idf-v4.4.2/components/esp_hw_support/CMakeLists.txt"
+		},
+		{
+			"isExternal" : true,
+			"path" : "C:/Users/Jimmy/.espressif/frameworks/esp-idf-v4.4.2/components/esp_hw_support/port/esp32/CMakeLists.txt"
+		},
+		{
+			"isExternal" : true,
+			"path" : "C:/Users/Jimmy/.espressif/frameworks/esp-idf-v4.4.2/components/xtensa/CMakeLists.txt"
+		},
+		{
+			"isExternal" : true,
+			"path" : "C:/Users/Jimmy/.espressif/frameworks/esp-idf-v4.4.2/components/esp32/CMakeLists.txt"
+		},
+		{
+			"isExternal" : true,
+			"path" : "C:/Users/Jimmy/.espressif/frameworks/esp-idf-v4.4.2/components/esp_common/CMakeLists.txt"
+		},
+		{
+			"isExternal" : true,
+			"path" : "C:/Users/Jimmy/.espressif/frameworks/esp-idf-v4.4.2/components/esp_timer/CMakeLists.txt"
+		},
+		{
+			"isExternal" : true,
+			"path" : "C:/Users/Jimmy/.espressif/frameworks/esp-idf-v4.4.2/components/freertos/CMakeLists.txt"
+		},
+		{
+			"isExternal" : true,
+			"path" : "C:/Users/Jimmy/.espressif/frameworks/esp-idf-v4.4.2/components/newlib/CMakeLists.txt"
+		},
+		{
+			"isExternal" : true,
+			"path" : "C:/Users/Jimmy/.espressif/frameworks/esp-idf-v4.4.2/components/newlib/port/CMakeLists.txt"
+		},
+		{
+			"isExternal" : true,
+			"path" : "C:/Users/Jimmy/.espressif/frameworks/esp-idf-v4.4.2/components/cxx/CMakeLists.txt"
+		},
+		{
+			"isExternal" : true,
+			"path" : "C:/Users/Jimmy/.espressif/frameworks/esp-idf-v4.4.2/components/app_trace/CMakeLists.txt"
+		},
+		{
+			"isExternal" : true,
+			"path" : "C:/Users/Jimmy/.espressif/frameworks/esp-idf-v4.4.2/components/asio/CMakeLists.txt"
+		},
+		{
+			"isExternal" : true,
+			"path" : "C:/Users/Jimmy/.espressif/frameworks/esp-idf-v4.4.2/components/bt/CMakeLists.txt"
+		},
+		{
+			"isExternal" : true,
+			"path" : "C:/Users/Jimmy/.espressif/frameworks/esp-idf-v4.4.2/components/cbor/CMakeLists.txt"
+		},
+		{
+			"isExternal" : true,
+			"path" : "C:/Users/Jimmy/.espressif/frameworks/esp-idf-v4.4.2/components/unity/CMakeLists.txt"
+		},
+		{
+			"isExternal" : true,
+			"path" : "C:/Users/Jimmy/.espressif/frameworks/esp-idf-v4.4.2/components/cmock/CMakeLists.txt"
+		},
+		{
+			"isExternal" : true,
+			"path" : "C:/Users/Jimmy/.espressif/frameworks/esp-idf-v4.4.2/components/coap/CMakeLists.txt"
+		},
+		{
+			"isExternal" : true,
+			"path" : "C:/Users/Jimmy/.espressif/frameworks/esp-idf-v4.4.2/components/nghttp/CMakeLists.txt"
+		},
+		{
+			"isExternal" : true,
+			"path" : "C:/Users/Jimmy/.espressif/frameworks/esp-idf-v4.4.2/components/esp-tls/CMakeLists.txt"
+		},
+		{
+			"isExternal" : true,
+			"path" : "C:/Users/Jimmy/.espressif/frameworks/esp-idf-v4.4.2/components/esp_adc_cal/CMakeLists.txt"
+		},
+		{
+			"isExternal" : true,
+			"path" : "C:/Users/Jimmy/.espressif/frameworks/esp-idf-v4.4.2/components/esp_hid/CMakeLists.txt"
+		},
+		{
+			"isExternal" : true,
+			"path" : "C:/Users/Jimmy/.espressif/frameworks/esp-idf-v4.4.2/components/tcp_transport/CMakeLists.txt"
+		},
+		{
+			"isExternal" : true,
+			"path" : "C:/Users/Jimmy/.espressif/frameworks/esp-idf-v4.4.2/components/esp_http_client/CMakeLists.txt"
+		},
+		{
+			"isExternal" : true,
+			"path" : "C:/Users/Jimmy/.espressif/frameworks/esp-idf-v4.4.2/components/esp_http_server/CMakeLists.txt"
+		},
+		{
+			"isExternal" : true,
+			"path" : "C:/Users/Jimmy/.espressif/frameworks/esp-idf-v4.4.2/components/esp_https_ota/CMakeLists.txt"
+		},
+		{
+			"isExternal" : true,
+			"path" : "C:/Users/Jimmy/.espressif/frameworks/esp-idf-v4.4.2/components/esp_https_server/CMakeLists.txt"
+		},
+		{
+			"isExternal" : true,
+			"path" : "C:/Users/Jimmy/.espressif/frameworks/esp-idf-v4.4.2/components/esp_lcd/CMakeLists.txt"
+		},
+		{
+			"isExternal" : true,
+			"path" : "C:/Users/Jimmy/.espressif/frameworks/esp-idf-v4.4.2/components/protobuf-c/CMakeLists.txt"
+		},
+		{
+			"isExternal" : true,
+			"path" : "C:/Users/Jimmy/.espressif/frameworks/esp-idf-v4.4.2/components/protocomm/CMakeLists.txt"
+		},
+		{
+			"isExternal" : true,
+			"path" : "C:/Users/Jimmy/.espressif/frameworks/esp-idf-v4.4.2/components/mdns/CMakeLists.txt"
+		},
+		{
+			"isExternal" : true,
+			"path" : "C:/Users/Jimmy/.espressif/frameworks/esp-idf-v4.4.2/components/esp_local_ctrl/CMakeLists.txt"
+		},
+		{
+			"isExternal" : true,
+			"path" : "C:/Users/Jimmy/.espressif/frameworks/esp-idf-v4.4.2/components/sdmmc/CMakeLists.txt"
+		},
+		{
+			"isExternal" : true,
+			"path" : "C:/Users/Jimmy/.espressif/frameworks/esp-idf-v4.4.2/components/esp_serial_slave_link/CMakeLists.txt"
+		},
+		{
+			"isExternal" : true,
+			"path" : "C:/Users/Jimmy/.espressif/frameworks/esp-idf-v4.4.2/components/esp_websocket_client/CMakeLists.txt"
+		},
+		{
+			"isExternal" : true,
+			"path" : "C:/Users/Jimmy/.espressif/frameworks/esp-idf-v4.4.2/components/expat/CMakeLists.txt"
+		},
+		{
+			"isExternal" : true,
+			"path" : "C:/Users/Jimmy/.espressif/frameworks/esp-idf-v4.4.2/components/wear_levelling/CMakeLists.txt"
+		},
+		{
+			"isExternal" : true,
+			"path" : "C:/Users/Jimmy/.espressif/frameworks/esp-idf-v4.4.2/components/fatfs/CMakeLists.txt"
+		},
+		{
+			"isExternal" : true,
+			"path" : "C:/Users/Jimmy/.espressif/frameworks/esp-idf-v4.4.2/components/freemodbus/CMakeLists.txt"
+		},
+		{
+			"isExternal" : true,
+			"path" : "C:/Users/Jimmy/.espressif/frameworks/esp-idf-v4.4.2/components/idf_test/CMakeLists.txt"
+		},
+		{
+			"isExternal" : true,
+			"path" : "C:/Users/Jimmy/.espressif/frameworks/esp-idf-v4.4.2/components/jsmn/CMakeLists.txt"
+		},
+		{
+			"isExternal" : true,
+			"path" : "C:/Users/Jimmy/.espressif/frameworks/esp-idf-v4.4.2/components/json/CMakeLists.txt"
+		},
+		{
+			"isExternal" : true,
+			"path" : "C:/Users/Jimmy/.espressif/frameworks/esp-idf-v4.4.2/components/libsodium/CMakeLists.txt"
+		},
+		{
+			"isExternal" : true,
+			"path" : "C:/Users/Jimmy/.espressif/frameworks/esp-idf-v4.4.2/components/mqtt/CMakeLists.txt"
+		},
+		{
+			"isExternal" : true,
+			"path" : "C:/Users/Jimmy/.espressif/frameworks/esp-idf-v4.4.2/components/openssl/CMakeLists.txt"
+		},
+		{
+			"isExternal" : true,
+			"path" : "C:/Users/Jimmy/.espressif/frameworks/esp-idf-v4.4.2/components/perfmon/CMakeLists.txt"
+		},
+		{
+			"isExternal" : true,
+			"path" : "C:/Users/Jimmy/.espressif/frameworks/esp-idf-v4.4.2/components/spiffs/CMakeLists.txt"
+		},
+		{
+			"isExternal" : true,
+			"path" : "C:/Users/Jimmy/.espressif/frameworks/esp-idf-v4.4.2/components/usb/CMakeLists.txt"
+		},
+		{
+			"isExternal" : true,
+			"path" : "C:/Users/Jimmy/.espressif/frameworks/esp-idf-v4.4.2/components/tinyusb/CMakeLists.txt"
+		},
+		{
+			"isExternal" : true,
+			"path" : "C:/Users/Jimmy/.espressif/frameworks/esp-idf-v4.4.2/components/ulp/CMakeLists.txt"
+		},
+		{
+			"isExternal" : true,
+			"path" : "C:/Users/Jimmy/.espressif/frameworks/esp-idf-v4.4.2/components/wifi_provisioning/CMakeLists.txt"
+		},
+		{
+			"path" : "main/CMakeLists.txt"
+		},
+		{
+			"path" : "components/rotary_encoder/CMakeLists.txt"
+		}
+	],
+	"kind" : "cmakeFiles",
+	"paths" : 
+	{
+		"build" : "C:/ESP32/Motor_esp32/cmake-build-debug",
+		"source" : "C:/ESP32/Motor_esp32"
+	},
+	"version" : 
+	{
+		"major" : 1,
+		"minor" : 0
+	}
+}

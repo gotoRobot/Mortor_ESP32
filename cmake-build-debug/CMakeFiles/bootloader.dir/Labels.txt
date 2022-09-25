@@ -1,0 +1,13 @@
+# Target labels
+ bootloader
+# Source files and their labels
+C:/ESP32/Motor_esp32/cmake-build-debug/CMakeFiles/bootloader
+C:/ESP32/Motor_esp32/cmake-build-debug/CMakeFiles/bootloader.rule
+C:/ESP32/Motor_esp32/cmake-build-debug/CMakeFiles/bootloader-complete.rule
+C:/ESP32/Motor_esp32/cmake-build-debug/bootloader-prefix/src/bootloader-stamp/bootloader-build.rule
+C:/ESP32/Motor_esp32/cmake-build-debug/bootloader-prefix/src/bootloader-stamp/bootloader-configure.rule
+C:/ESP32/Motor_esp32/cmake-build-debug/bootloader-prefix/src/bootloader-stamp/bootloader-download.rule
+C:/ESP32/Motor_esp32/cmake-build-debug/bootloader-prefix/src/bootloader-stamp/bootloader-install.rule
+C:/ESP32/Motor_esp32/cmake-build-debug/bootloader-prefix/src/bootloader-stamp/bootloader-mkdir.rule
+C:/ESP32/Motor_esp32/cmake-build-debug/bootloader-prefix/src/bootloader-stamp/bootloader-patch.rule
+C:/ESP32/Motor_esp32/cmake-build-debug/bootloader-prefix/src/bootloader-stamp/bootloader-update.rule
