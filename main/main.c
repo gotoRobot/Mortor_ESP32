@@ -19,21 +19,21 @@
 #define ROTARY_ENCODER_PINB 36
 #define MCPWM0A_PIN 22
 #define MCPWM0B_PIN 23
-#define PID_P_i 9.5425f  
-#define PID_I_i 2.3762f  //47523.4539552618*5e-5
+#define PID_P_I 9.5425f  
+#define PID_I_I 2.3762f  //47523.4539552618*5e-5
 #define PID_P_v 0.0049797f
-#define PID_I_v 0.00044505f  //0.0445052390679643*1e-2
-#define Max_u 4.99f
-#define Max_i 0.13f
-#define Max_v 700.0f
-#define Min_v 70.0f//只在速度足够大才控制电流
-#define Para_encoder 14.28f //100*2pi/44 11线编码器
-#define Delay_kHz 0.1f
-#define Sampling_R 0.000634921f
-#define Pwm_Hz 40000
+#define PID_I_V 0.00044505f  //0.0445052390679643*1e-2
+#define MAX_U 4.99f
+#define MAX_I 0.13f
+#define MAX_V 700.0f
+#define MIN_V 70.0f//只在速度足够大才控制电流
+#define PARA_ENCODER 14.28f //100*2pi/44 11线编码器
+#define DELAY_KHZ 0.1f
+#define SAMPLING_R 0.000634921f
+#define PWM_HZ 40000
 
 //FreeRtos相关线程和中断程序
-static void Pwm_Isr(void *arg);
+static void PwmIsr(void *arg);
 static void CurrentThread_(void *arg);
 static void SpeedThread_(void *arg);
 QueueHandle_t g_current_queue;//电流采样值的序列
@@ -42,9 +42,9 @@ QueueHandle_t g_current_t_queue;//目标电流值
 int32_t g_adc_offset;//采样偏差
 rotary_encoder_t *g_encoder = NULL;//rotary encoder handle
 
-#define ___EspADCConfigWidth adc1_config_width
-#define ___EspADCConfigChannelAtten adc1_config_channel_atten
-#define ___EspADCGetRaw adc1_get_raw
+#define ___EspAdc1ConfigWidth adc1_config_width
+#define ___EspAdc1ConfigChannelAtten adc1_config_channel_atten
+#define ___EspAdc1GetRaw adc1_get_raw
 #define ___EspRotaryEncoderDefaultConfig ROTARY_ENCODER_DEFAULT_CONFIG
 #define ___EspRotaryEncoderNewEc11 rotary_encoder_new_ec11
 
@@ -59,12 +59,12 @@ inline void PysbMotorInit(){
 
     //配置电流采样adc接口
     #ifdef BASE_ON_ESP
-    ESP_ERROR_CHECK(___EspADC1ConfigWidth(ADC_WIDTH_BIT_12));
-    ESP_ERROR_CHECK(___EspADC1ConfigChannelAtten(ADC1_CHANNEL_7, ADC_ATTEN_DB_11));
+    ESP_ERROR_CHECK(___EspAdc1ConfigWidth(ADC_WIDTH_BIT_12));
+    ESP_ERROR_CHECK(___EspAdc1ConfigChannelAtten(ADC1_CHANNEL_7, ADC_ATTEN_DB_11));
     ///测定基础电流,取50次取平均值足够了
     for (uint8_t i = 0; i < 50; i++)
     {
-        g_adc_offset += ___EspADCGetRaw(ADC1_CHANNEL_7);
+        g_adc_offset += ___EspAdc1GetRaw(ADC1_CHANNEL_7);
     }
     g_adc_offset /= 50;
 
@@ -85,24 +85,26 @@ inline void PysbMotorInit(){
     MCPWM0.operators[0].gen_stmp_cfg.gen_b_shdw_full = 1;
 
     mcpwm_config_t pwm_config;
-    pwm_config.frequency = Pwm_Hz;
-    pwm_config.cmpr_a = 50.0f;
-    pwm_config.cmpr_b = 50.0f;
-    pwm_config.counter_mode =  MCPWM_UP_DOWN_COUNTER;
-    pwm_config.duty_mode = MCPWM_DUTY_MODE_1;
+    {
+        pwm_config.frequency = PWM_HZ;
+        pwm_config.cmpr_a = 50.0f;
+        pwm_config.cmpr_b = 50.0f;
+        pwm_config.counter_mode =  MCPWM_UP_DOWN_COUNTER;
+        pwm_config.duty_mode = MCPWM_DUTY_MODE_1; 
+    }
     ESP_ERROR_CHECK(___EspMcpwmInit(MCPWM_UNIT_0, MCPWM_TIMER_0, &pwm_config));
-
-    g_current_queue = xQueueCreate(1, sizeof(int32_t));
-    g_current_t_queue = xQueueCreate(1, sizeof(float));
-
-    MCPWM0.int_ena.val = MCPWM_TIMER0_TEZ_INT_ENA;
-    ESP_ERROR_CHECK(___EspMcpwmIsrRegister(MCPWM_UNIT_0, Pwm_Isr, NULL, ESP_INTR_FLAG_IRAM, NULL));
     #endif
 }
 
 void app_main(void)
 {
     PysbMotorInit();
+
+    g_current_queue = xQueueCreate(1, sizeof(int32_t));
+    g_current_t_queue = xQueueCreate(1, sizeof(float));
+
+    MCPWM0.int_ena.val = MCPWM_TIMER0_TEZ_INT_ENA;
+    ESP_ERROR_CHECK(___EspMcpwmIsrRegister(MCPWM_UNIT_0, PwmIsr, NULL, ESP_INTR_FLAG_IRAM, NULL));
 
     xTaskCreate(CurrentThread_, "CurrentThread_", 4095, NULL, 5, NULL);
     xTaskCreate(SpeedThread_, "SpeedThread_", 4095, NULL, 4, NULL);
@@ -112,7 +114,7 @@ void app_main(void)
  * 
  * @param void
  */
-static void IRAM_ATTR Pwm_Isr(void *arg)
+static void IRAM_ATTR PwmIsr(void *arg)
 {
     uint32_t mcpwm_intr_status;
     int32_t raw_val;
@@ -144,7 +146,7 @@ static void CurrentThread_(void *arg)
             /* gpio_set_level(GPIO_NUM_21, 0); */
             xQueueReceive(g_current_t_queue, &i_target, 0);
 
-            float i_current = (float)(raw_val - g_adc_offset) * Sampling_R;	//raw_val to current(A);
+            float i_current = (float)(raw_val - g_adc_offset) * SAMPLING_R;	//raw_val to current(A);
             float i_error = i_target - i_current;
 
             static float e_sum = 0;
@@ -153,15 +155,15 @@ static void CurrentThread_(void *arg)
             {
                 e_sum += i_error;
             }
-            float u = i_error * PID_P_i + e_sum * PID_I_i;
-            if (u > Max_u)
+            float u = i_error * PID_P_I + e_sum * PID_I_I;
+            if (u > MAX_U)
             {
-                u = Max_u;
+                u = MAX_U;
                 windup = 1;
             }
-            else if (u < -Max_u)
+            else if (u < -MAX_U)
             {
-                u = -Max_u;
+                u = -MAX_U;
                 windup = 2;
             }//方向B(逆时针)
             else
@@ -195,7 +197,7 @@ static void SpeedThread_(void *arg)
         float i_target = 0.0f;
 
         enc_cnt = g_encoder->get_counter_value(g_encoder);
-        v_current = (float)(enc_cnt - enc_cnt_p) * Para_encoder; 
+        v_current = (float)(enc_cnt - enc_cnt_p) * PARA_ENCODER; 
         enc_cnt_p = enc_cnt;
         float v_error = v_target - v_current;//计算速度误差
 
@@ -205,25 +207,25 @@ static void SpeedThread_(void *arg)
         {
             e_sum += v_error;
         }
-        if (v_target > Min_v || v_target < -Min_v)//只在速度足够大才控制电流
-            i_target = v_error * PID_P_v + e_sum * PID_I_v;
+        if (v_target > MIN_V || v_target < -MIN_V)//只在速度足够大才控制电流
+            i_target = v_error * PID_P_v + e_sum * PID_I_V;
         else
         {
             i_target = 0;
             e_sum = 0;
         }
 
-       if (i_target >= Max_i)
+       if (i_target >= MAX_I)
         {
-            i_target = Max_i;
+            i_target = MAX_I;
             if (v_error > 0)
                 windup = 1;
             else
                 windup = 0;
         } //方向B(逆时针)
-        else if (i_target <= -Max_i)
+        else if (i_target <= -MAX_I)
         {
-            i_target = -Max_i;
+            i_target = -MAX_I;
             if (v_error < 0)
                 windup = 2;
             else
@@ -246,17 +248,17 @@ static void SpeedThread_(void *arg)
 //			v_target = v_current;
         }
 
-        if (v_target > Max_v)
+        if (v_target > MAX_V)
         {
-            v_target = Max_v;
+            v_target = MAX_V;
         }
-        else if (v_target < -Max_v)
+        else if (v_target < -MAX_V)
         {
-            v_target = -Max_v;
+            v_target = -MAX_V;
         }
 
         xQueueSend(g_current_t_queue, &i_target, portMAX_DELAY);//发送目标电流
 
-        vTaskDelayUntil(&xLastWakeTime, 1 / Delay_kHz*portTICK_PERIOD_MS);
+        vTaskDelayUntil(&xLastWakeTime, 1 / DELAY_KHZ*portTICK_PERIOD_MS);
     }
 }
