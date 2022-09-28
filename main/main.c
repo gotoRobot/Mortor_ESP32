@@ -109,6 +109,7 @@ void app_main(void)
     xTaskCreate(CurrentThread_, "CurrentThread_", 4095, NULL, 5, NULL);
     xTaskCreate(SpeedThread_, "SpeedThread_", 4095, NULL, 4, NULL);
 }
+
 /**
  * @brief transport 
  * 
@@ -184,25 +185,26 @@ static void CurrentThread_(void *arg)
  */
 static void SpeedThread_(void *arg)
 {
-    while (1)
-    {
-        TickType_t xLastWakeTime;
+    TickType_t xLastWakeTime;
         xLastWakeTime = xTaskGetTickCount();
 
         //设置初始状态
         int32_t enc_cnt = 0;
-        static int32_t enc_cnt_p = 0;
+        int32_t enc_cnt_p = 0;
         float v_current = 0;
-        static float v_target = 0.0f;
-        float i_target = 0.0f;
+        float v_target = 0.0f;
+        float i_target = 0.0f;        
+        float v_error;//计算速度误差
+        uint8_t windup = 0;
+        float e_sum = 0;
 
+    while (1)
+    {
         enc_cnt = g_encoder->get_counter_value(g_encoder);
         v_current = (float)(enc_cnt - enc_cnt_p) * PARA_ENCODER; 
         enc_cnt_p = enc_cnt;
-        float v_error = v_target - v_current;//计算速度误差
-
-        static float e_sum = 0;
-        static uint8_t windup = 0;
+        v_error = v_target - v_current;
+        
         if (!windup)
         {
             e_sum += v_error;
@@ -215,15 +217,16 @@ static void SpeedThread_(void *arg)
             e_sum = 0;
         }
 
+        //设定最大电流，同时也检测v_error是否反向了
        if (i_target >= MAX_I)
         {
             i_target = MAX_I;
-            if (v_error > 0)
-                windup = 1;
-            else
+            if (v_error > 0) 
+                windup = 1; //电流饱和了，节约计算
+            else 
                 windup = 0;
-        } //方向B(逆时针)
-        else if (i_target <= -MAX_I)
+        } //方向B(逆时针) 
+        else if (i_target <= -MAX_I) 
         {
             i_target = -MAX_I;
             if (v_error < 0)
