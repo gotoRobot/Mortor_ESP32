@@ -30,7 +30,7 @@
 #define PARA_ENCODER 14.28f //(DELAY_HZ)100*2pi/44 11线编码器
 #define DELAY_MS 10
 #define SAMPLING_R 0.000634921f
-#define PWM_HZ 40000
+#define PWM_HZ 40000    //配置电机频率
 
 //FreeRtos相关线程和中断程序
 static void PwmIsr(void *arg);
@@ -200,11 +200,13 @@ static void SpeedThread_(void *arg)
 
     while (1)
     {
+        if(windup!=3)
+        {
         enc_cnt = g_encoder->get_counter_value(g_encoder);
         v_current = (float)(enc_cnt - enc_cnt_p) * PARA_ENCODER; 
         enc_cnt_p = enc_cnt;
         v_error = v_target - v_current;
-        
+
         if (!windup)
         {
             e_sum += v_error;
@@ -250,6 +252,12 @@ static void SpeedThread_(void *arg)
             v_target -= 40.0f;
 //			v_target = v_current;
         }
+        
+
+        if(windup!=0&&v_current==0)
+        {
+            windup=3;
+        }
 
         if (v_target > MAX_V)
         {
@@ -261,7 +269,8 @@ static void SpeedThread_(void *arg)
         }
 
         xQueueSend(g_current_t_queue, &i_target, portMAX_DELAY);//发送目标电流
-
+        }
+        
         vTaskDelayUntil(&xLastWakeTime, DELAY_MS/ portTICK_PERIOD_MS);
     }
 }
