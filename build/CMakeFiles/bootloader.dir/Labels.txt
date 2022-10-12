@@ -1,0 +1,13 @@
+# Target labels
+ bootloader
+# Source files and their labels
+G:/Esp_Project/Motor_esp32_Pos/build/CMakeFiles/bootloader
+G:/Esp_Project/Motor_esp32_Pos/build/CMakeFiles/bootloader.rule
+G:/Esp_Project/Motor_esp32_Pos/build/CMakeFiles/bootloader-complete.rule
+G:/Esp_Project/Motor_esp32_Pos/build/bootloader-prefix/src/bootloader-stamp/bootloader-build.rule
+G:/Esp_Project/Motor_esp32_Pos/build/bootloader-prefix/src/bootloader-stamp/bootloader-configure.rule
+G:/Esp_Project/Motor_esp32_Pos/build/bootloader-prefix/src/bootloader-stamp/bootloader-download.rule
+G:/Esp_Project/Motor_esp32_Pos/build/bootloader-prefix/src/bootloader-stamp/bootloader-install.rule
+G:/Esp_Project/Motor_esp32_Pos/build/bootloader-prefix/src/bootloader-stamp/bootloader-mkdir.rule
+G:/Esp_Project/Motor_esp32_Pos/build/bootloader-prefix/src/bootloader-stamp/bootloader-patch.rule
+G:/Esp_Project/Motor_esp32_Pos/build/bootloader-prefix/src/bootloader-stamp/bootloader-update.rule

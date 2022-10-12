@@ -126,72 +126,35 @@ static void current_thread(void *arg)
     }
 }
 
-static void speed_thread(void *arg)
+static void Position_thread(void *arg)
 {
+    //initialize
+    int32_t enc_pnt=0;
+    int32_t p_current=0;
+    int32_t p_error=0;
+    float i_target=0;
+    TickType_t xLastWakeTime;
+    xLastWakeTime = xTaskGetTickCount();
+    int32_t p_cnt;
+    uint8_t windup=0;
+
+    TickType_t xLastWakeTime;
+    xLastWakeTime = xTaskGetTickCount();
+
+    //以当前位置为起点，读取88个脉冲，重置encoder脉冲计数
+
     while (1)
     {
-        TickType_t xLastWakeTime;
-        xLastWakeTime = xTaskGetTickCount();
+        while(p_current<single_step)
+        {
+            //读取 ，计算偏差， 设置力矩
+        }
+
+        //重置encoder计数
+        
 
         int32_t enc_cnt = 0;
         static int32_t enc_cnt_p = 0;
-        float v_current = 0;
-        static float v_target = 0.0f;
-        float i_target = 0.0f;
-
-        enc_cnt = g_encoder->get_counter_value(g_encoder);
-
-
-        v_current = (float)(enc_cnt - enc_cnt_p) * 14.28f; //100*2pi/44 11线编码器
-        enc_cnt_p = enc_cnt;
-        float v_error = v_target - v_current;
-
-        static float e_sum = 0;
-        static uint8_t windup = 0;
-        if (!windup)
-        {
-            e_sum += v_error;
-        }
-        if (v_target > 70 || v_target < -70)
-            i_target = v_error * 0.0049797f + e_sum * 0.00044505f;
-        else
-        {
-            i_target = 0;
-            e_sum = 0;
-        }
-
-        if (i_target >= 0.40f)
-        {
-            i_target = 0.40f;
-            if (v_error > 0)
-                windup = 1;
-            else
-                windup = 0;
-        }
-        else if (i_target <= -0.40f)
-        {
-            i_target = -0.40f;
-            if (v_error < 0)
-                windup = 2;
-            else
-                windup = 0;
-        }
-        else
-        {
-            windup = 0;
-        }
-
-//        if (v_error < -50.0f)
-//        {
-//            v_target += 40.0f;
-////			v_target = v_current;
-//        }
-//        else if (v_error > 50.0f)
-//        {
-//            v_target -= 40.0f;
-////			v_target = v_current;
-//        }
-
         static float p_target = 0.0f;
         float p_current = (float)enc_cnt * 0.1428f;
         float p_error = p_target - p_current;
@@ -212,38 +175,6 @@ static void speed_thread(void *arg)
 //            v_target = 0;
 //            p_e_sum = 0;
 //        }
-
-        if (v_target >= 700.0f)
-        {
-            v_target = 700.0f;
-            if (p_error > 0)
-                p_windup = 1;
-            else
-                p_windup = 0;
-        }
-        else if (v_target <= -700.0f)
-        {
-            v_target = -700.0f;
-            if (p_error < 0)
-                p_windup = 2;
-            else
-                p_windup = 0;
-        }
-        else
-        {
-            p_windup = 0;
-        }
-
-
-//        if (v_target > 700.0f)
-//        {
-//            v_target = 700.0f;
-//        }
-//        else if (v_target < -700.0f)
-//        {
-//            v_target = -700.0f;
-//        }
-
         xQueueSend(g_current_t_queue, &i_target, portMAX_DELAY);
 
         vTaskDelayUntil(&xLastWakeTime, 10 / portTICK_PERIOD_MS);
