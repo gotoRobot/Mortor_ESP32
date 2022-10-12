@@ -1,0 +1,11 @@
+{
+	"folders": [
+		{
+			"path": "../../Motor_esp32"
+		},
+		{
+			"path": ".."
+		}
+	],
+	"settings": {}
+}
