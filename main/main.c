@@ -1,182 +1,199 @@
 #include <stdio.h>
-#include "string.h"
+#include <stdint.h>
+#define _cplusplus
+
+#include "pysb_global.h"
+
+#include "pysb_uart.h"
+#include "pysb_gpio.h"
+#include "pysb_motor.h"
+
+#include "pysb_status.h"
+#include "pysb_lb_comm.h"
+#include "pysb_set_table.h"
+#include "pysb_system.h"
+#include "pysb_isr.h"
+#include "pysb_log.h"
+
+#ifdef BASE_ON_ESP
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
-#include "freertos/queue.h"
-#include "freertos/semphr.h"
-#include "esp_attr.h"
-#include "soc/rtc.h"
-#include "driver/gpio.h"
-#include "driver/mcpwm.h"
-#include "soc/mcpwm_periph.h"
-#include "driver/adc.h"
-#include "esp_log.h"
-#include "rotary_encoder.h"
+#endif 
 
-static void pwm_isr(void *arg);
-static void current_thread(void *arg);
-static void speed_thread(void *arg);
+xQueueHandle START_BUTTON_QUEUE = NULL;
+/* QueueHandle_t CURRENT_SAMPLE_QUEUE;
+QueueHandle_t CURRENT_TARGET_QUEUE; */
+rotary_encoder_t *encoder_handle=NULL;////
 
-QueueHandle_t g_current_queue;
-QueueHandle_t g_current_t_queue;
-int32_t g_adc_offset;
-rotary_encoder_t *g_encoder = NULL;
+static void PysbInit(void ) {
+    START_BUTTON_QUEUE = xQueueCreate(10, sizeof(uint32_t));
+    PysbGpioInit();
+    PysbUartInit();
+    PysbMotorInit();
+    PysbIsrInit();
+}
+
+static void PysbLbComm(void *arg) {
+    //initialize log
+    static const char *LB_COMM_TASK_TAG = "LbCommTask";
+    ___EspLogLevelSet(LB_COMM_TASK_TAG, ESP_LOG_INFO);
+
+    
+    uint8_t* rx_data = (uint8_t*) malloc(RX_BUF_SIZE+1);
+    cmd_buffer_t cmd_buffer = CreateCmdBuffer();
+    cmds_queue_t cmds_queue = CreateCmdsQueue();
+    extern lb_cmd_status_t LB_COMM_STATUS;
+    InitTable();
+    uint32_t rx_bytes = 0;
+    while (1) {
+        rx_bytes = ___EspUartReadBytes(UART_LB, rx_data, RX_BUF_SIZE, RX_WAIT_TIME);
+        if (rx_bytes > 0) {
+            PysbLbCommRxProcess(rx_data,rx_bytes,&cmd_buffer,&cmds_queue);
+            ___EspLogInfo(LB_COMM_TASK_TAG, "Read %d bytes: '%s'", rx_bytes, rx_data);
+            ___EspLogBufferHexdump(LB_COMM_TASK_TAG, rx_data, rx_bytes, ESP_LOG_INFO);
+        } else {
+            //detele the first cmd that is send by start block
+            while(!CmdsIsEmpty(&cmds_queue)){
+                lb_cmd_t cmd;
+                GetCmd(&cmds_queue,&cmd);
+                if(cmd.source_id == SB_ID){ //detele the cmd which is send by start block
+                    DeleteCmd(&cmds_queue);
+                }else{
+                    break;
+                }
+            }
+            switch(LB_COMM_STATUS.lb_comm_status){
+                case START:{
+                    ___EspLogInfo("Write Pin","set pin low");
+                    ___EspGpioSetLevel(ACTIVATE_LB_PIN, 0); //activate logic block
+                    LB_COMM_STATUS.lb_comm_status = ADDR_NOTICE;
+                    break;
+                }
+                case ADDR_NOTICE:{
+                    if(LB_COMM_STATUS.activate_dir == DIR_END){
+                        LB_COMM_STATUS.lb_comm_status = FINISHED;
+                        break;
+                    }
+                    if(PysbTableAddrNotice() != NORMAL){
+                        ___EspLogError("ADDR_NOTICE","address notice unsuccessfully!");
+                    }else{
+                        LB_COMM_STATUS.lb_comm_status = ADDR_NOTICE_REQUEST;
+                    }
+                    break;
+                }
+                case ADDR_NOTICE_REQUEST:{
+                    if(PysbTableAddrNoticeRequest() != NORMAL){
+                        ___EspLogError("ADDR_NOTICE_REQUEST","address notice request unsuccessfully!");
+                    }else{
+                        LB_COMM_STATUS.lb_comm_status = ADDR_NOTICE_WAIT;
+                        PysbStartLbCommRqIsr();
+                    }
+                    break;
+                }
+                case ADDR_NOTICE_WAIT:{
+                    if(CmdsIsEmpty(&cmds_queue)){
+                        break;
+                    }
+                    if(PysbTableAddrNoticeWait(&cmds_queue) != NORMAL){
+                        ___EspLogError("ADDR_NOTICE_WAIT","address notice wait unsuccessfully!");
+                    }else{
+                        PysbStopLbCommRqIsr();
+                        LB_COMM_STATUS.lb_comm_status = ADDR_NOTICE_WAIT_OVER;
+                    }
+                    break;
+                }
+                case ADDR_NOTICE_WAIT_OVER:{
+                    //print
+                    LB_COMM_STATUS.lb_comm_status = ACTIVATE;
+                    break;
+                }
+                case ACTIVATE:{
+                    if(LB_COMM_STATUS.activate_dir == DIR_END){
+                        LB_COMM_STATUS.lb_comm_status = FINISHED;
+                        break;
+                    }
+                    if(PysbTableActivate() != NORMAL){
+                        ___EspLogError("ACTIVATE","activate unsuccessfully!");
+                    }else{
+                        LB_COMM_STATUS.lb_comm_status = ACTIVATE_REQUEST;
+                    }
+                    break;
+                }
+                case ACTIVATE_REQUEST:{
+                    if(PysbTableActivateRequest() != NORMAL){
+                        ___EspLogError("ACTIVATE_REQUEST","activate request unsuccessfully!");
+                    }else{
+                        LB_COMM_STATUS.lb_comm_status = ACTIVATE_WAIT;
+                        PysbStartLbCommRqIsr();
+                    }
+                    break;
+                }
+                case ACTIVATE_WAIT:{
+                    if(CmdsIsEmpty(&cmds_queue)){
+                        break;
+                    }
+                    if(PysbTableActivateWait(&cmds_queue) != NORMAL){
+                        ___EspLogError("ACTIVATE_WAIT","activate wait unsuccessfully!");
+                    }else{
+                        PysbStopLbCommRqIsr();
+                        LB_COMM_STATUS.lb_comm_status = ACTIVATE_WAIT_OVER;
+                    }
+                    break;
+                }
+                case ACTIVATE_WAIT_OVER:{
+                    if(LB_COMM_STATUS.activate == ENTER_ACTIVATE){
+                        LB_COMM_STATUS.lb_comm_status = ADDR_NOTICE;
+                    }else{//LB_COMM_STATUS.activate == ACTIVATE_RIGHT or ACTIVATE_DOWN
+                        LB_COMM_STATUS.lb_comm_status = ACTIVATE;
+                    }
+                    break;
+                }
+                case FINISHED:{
+                    ___EspLogInfo("FINISHED","nice!");
+                    PrintTable();
+                    PysbDelayS(5);
+                    break;
+                }
+                default:{
+                    if(!CmdsIsEmpty(&cmds_queue)){
+                        lb_cmd_t cmd;
+                        GetCmd(&cmds_queue,&cmd);
+                        ___EspUartWriteBytes(UART_LB,cmd.cmd,cmd.cmd_length);
+                        ___EspLogBufferHexdump("write byte", cmd.cmd, cmd.cmd_length, ESP_LOG_INFO);
+                        DeleteCmd(&cmds_queue);
+                    }
+                }
+            }
+        }
+    }
+    free(rx_data); 
+    DestoryCmdBuffer(&cmd_buffer);
+}
+
+void test(){
+    lb_cmd_t cmd = CreateLbCmd();
+    static const char *LB_COMM_TASK_TAG = "LbCommTask";
+    ___EspLogLevelSet(LB_COMM_TASK_TAG, ESP_LOG_INFO);
+    ___EspLogInfo(LB_COMM_TASK_TAG, "cmd: %d", cmd.opcode);
+    while(true){
+        vTaskDelay(2000 / portTICK_PERIOD_MS);
+    }
+}
 
 void app_main(void)
 {
-    ESP_ERROR_CHECK(gpio_reset_pin(GPIO_NUM_21));
-    ESP_ERROR_CHECK(gpio_set_direction(GPIO_NUM_21, GPIO_MODE_OUTPUT));
-
-    ESP_ERROR_CHECK(adc1_config_width(ADC_WIDTH_BIT_12));
-    ESP_ERROR_CHECK(adc1_config_channel_atten(ADC1_CHANNEL_7, ADC_ATTEN_DB_11));
-    for (uint8_t i = 0; i < 50; i++)
-    {
-        g_adc_offset += adc1_get_raw(ADC1_CHANNEL_7);
-    }
-    g_adc_offset /= 50;
-
-    uint32_t pcnt_unit = 0;
-    rotary_encoder_config_t config = ROTARY_ENCODER_DEFAULT_CONFIG((rotary_encoder_dev_t)pcnt_unit, 39, 36);
-    ESP_ERROR_CHECK(rotary_encoder_new_ec11(&config, &g_encoder));
-    ESP_ERROR_CHECK(g_encoder->set_glitch_filter(g_encoder, 1));
-    ESP_ERROR_CHECK(g_encoder->start(g_encoder));
-
-    ESP_ERROR_CHECK(mcpwm_gpio_init(MCPWM_UNIT_0, MCPWM0A, 22));
-    ESP_ERROR_CHECK(mcpwm_gpio_init(MCPWM_UNIT_0, MCPWM0B, 23));
-
-    MCPWM0.operators[0].gen_stmp_cfg.gen_a_upmethod = 1;
-    MCPWM0.operators[0].gen_stmp_cfg.gen_b_upmethod = 1;
-    MCPWM0.operators[0].gen_stmp_cfg.gen_a_shdw_full = 1;
-    MCPWM0.operators[0].gen_stmp_cfg.gen_b_shdw_full = 1;
-
-    mcpwm_config_t pwm_config;
-    pwm_config.frequency = 40000;
-    pwm_config.cmpr_a = 50.0f;
-    pwm_config.cmpr_b = 50.0f;
-    pwm_config.counter_mode =  MCPWM_UP_DOWN_COUNTER;
-    pwm_config.duty_mode = MCPWM_DUTY_MODE_1;
-    ESP_ERROR_CHECK(mcpwm_init(MCPWM_UNIT_0, MCPWM_TIMER_0, &pwm_config));
-
-    g_current_queue = xQueueCreate(1, sizeof(int32_t));
-    g_current_t_queue = xQueueCreate(1, sizeof(float));
-
-    MCPWM0.int_ena.val = MCPWM_TIMER0_TEZ_INT_ENA;
-    ESP_ERROR_CHECK(mcpwm_isr_register(MCPWM_UNIT_0, pwm_isr, NULL, ESP_INTR_FLAG_IRAM, NULL));
-
-    xTaskCreate(current_thread, "current_thread", 4095, NULL, 5, NULL);
-    xTaskCreate(speed_thread, "speed_thread", 4095, NULL, 4, NULL);
-}
-
-static void IRAM_ATTR pwm_isr(void *arg)
-{
-    uint32_t mcpwm_intr_status;
-    int32_t raw_val;
-    mcpwm_intr_status = MCPWM0.int_st.val;
-    BaseType_t high_task_awoken = pdFALSE;
-    if (mcpwm_intr_status & MCPWM_TIMER0_TEZ_INT_ENA)
-    {
-        gpio_set_level(GPIO_NUM_21, 1);
-        raw_val = adc1_get_raw(ADC1_CHANNEL_7);
-        xQueueSendFromISR(g_current_queue, &raw_val, &high_task_awoken);
-    }
-    MCPWM0.int_clr.val = mcpwm_intr_status;
-    portYIELD_FROM_ISR(high_task_awoken);
-
-}
-
-static void current_thread(void *arg)
-{
-    int32_t raw_val;
-    float i_target;
-    while (1)
-    {
-        if (xQueueReceive(g_current_queue, &raw_val, portMAX_DELAY) == pdTRUE)
-        {
-            gpio_set_level(GPIO_NUM_21, 0);
-            xQueueReceive(g_current_t_queue, &i_target, 0);
-
-            float i_current = (float)(raw_val - g_adc_offset) * 0.000634921f;	//raw_val to current(A);
-            float i_error = i_target - i_current;
-
-            static float e_sum = 0;
-            static uint8_t windup = 0;
-            if (!windup)
-            {
-                e_sum += i_error;
-            }
-            float u = i_error * 9.5425f + e_sum * 2.3762f;
-            if (u > 4.99f)
-            {
-                u = 4.99f;
-                windup = 1;
-            }
-            else if (u < -4.99f)
-            {
-                u = -4.99f;
-                windup = 2;
-            }
-            else
-            {
-                windup = 0;
-            }
-
-            mcpwm_set_duty(MCPWM_UNIT_0, MCPWM_TIMER_0, MCPWM_GEN_A, (1 - (u + 5.0f) / 10.0f) * 100);
-            mcpwm_set_duty(MCPWM_UNIT_0, MCPWM_TIMER_0, MCPWM_GEN_B, (u + 5.0f) / 10.0f * 100);
+    sb_status_t sb_status = INIT;
+    // test();
+    PysbInit();
+    xTaskCreate(CurrentThread, "CurrentThread", 4095, NULL, 5, NULL);
+    xTaskCreate(SpeedThread, "SpeedThread", 4095, NULL, 4, NULL);
+    while(sb_status == INIT){
+        uint8_t r = 0;
+        xQueueReceive(START_BUTTON_QUEUE, &r, portMAX_DELAY);
+        if(r == BUTTON){
+            sb_status = START_UP;
         }
     }
-}
-
-static void Position_thread(void *arg)
-{
-    //initialize
-    int32_t enc_pnt=0;
-    int32_t p_current=0;
-    int32_t p_error=0;
-    float i_target=0;
-    TickType_t xLastWakeTime;
-    xLastWakeTime = xTaskGetTickCount();
-    int32_t p_cnt;
-    uint8_t windup=0;
-
-    TickType_t xLastWakeTime;
-    xLastWakeTime = xTaskGetTickCount();
-
-    //以当前位置为起点，读取88个脉冲，重置encoder脉冲计数
-
-    while (1)
-    {
-        while(p_current<single_step)
-        {
-            //读取 ，计算偏差， 设置力矩
-        }
-
-        //重置encoder计数
-        
-
-        int32_t enc_cnt = 0;
-        static int32_t enc_cnt_p = 0;
-        static float p_target = 0.0f;
-        float p_current = (float)enc_cnt * 0.1428f;
-        float p_error = p_target - p_current;
-        static float p_e_sum = 0.0f;
-        static uint8_t p_windup = 0;
-        if (p_error > 2 * 3.14159f * 6)
-            p_target -= 2 * 3.14159f * 12;
-        else if (p_error < -2 * 3.14159f * 6)
-            p_target += 2 * 3.14159f * 12;
-        if (!p_windup)
-        {
-            p_e_sum += p_error;
-        }
-//        if (p_error > 2 * 3.14159f || p_error < -2 * 3.14159f)
-            v_target = p_error * 8.7379f + p_e_sum * 0.013016f;
-//        else
-//        {
-//            v_target = 0;
-//            p_e_sum = 0;
-//        }
-        xQueueSend(g_current_t_queue, &i_target, portMAX_DELAY);
-
-        vTaskDelayUntil(&xLastWakeTime, 10 / portTICK_PERIOD_MS);
-    }
-}
+    //remember give enough space for pysblbcomm task! 
+    xTaskCreate(PysbLbComm,"PysbLbComm",24576*2,NULL,configMAX_PRIORITIES, NULL);
+} 
