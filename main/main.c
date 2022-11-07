@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include "string.h"
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
@@ -12,23 +13,61 @@
 #include "driver/adc.h"
 #include "esp_log.h"
 #include "rotary_encoder.h"
+#include <math.h>
 
 /* static void position_isr(void *arg); */
 static void pwm_isr(void *arg);
 /* static void current_thread(void *arg); */
 static void power_thread(void *arg);
+static void position_thread(void *arg);
 
-#define SINGLE_STEP 88
-#define HALF_STEP 44
-#define MAX_I 0.13f
 QueueHandle_t power_queue;
 QueueHandle_t position_queue;
+/* QueueHandle_t distence_queue; */
 int32_t g_adc_offset;
-rotary_encoder_t *g_encoder = NULL;
-uint8_t motor_status;//0:静止，1:正转，2:反转，3:停止
 
-static const char *TAG = "Target";
-static const char *TAG2 = "Current";
+struct position_handle{
+    int8_t class_cnt;//记录当前档位
+    int8_t degree_cnt;//当前档位分度值
+    int16_t distence_cnt;//与目标位置的距离
+    int16_t pos_target;//设定转动角度
+    char motor_position_status;//0:无偏，1:正篇，2:负偏
+};
+    struct position_handle cube;
+    struct position_handle impulse;
+
+    /* basic encoder */
+    rotary_encoder_t *encoder = NULL;
+    int16_t enc_cnt_1;//目前的脉冲数
+    int16_t enc_cnt_0;//上一个速度周期脉冲数
+    char clockwise;//旋转方向
+
+    char motor_speed_status=0;//0:静止，1:正转，2:反转，3:停止，4:最大正转，5:最大反转
+    float v_current=0;
+    float v_target=0;
+    float v_error=0;
+    float e_sum=0;
+    #define PID_P_V 0.0049797f
+    #define PID_I_V 0.00044505f  //0.0445052390679643*1e-2
+    #define MAX_V 1000.0f
+    #define MIN_V 50//只在速度足够大才控制电流r_handle
+
+    int32_t g_adc_offset;
+    float i_target;
+
+        #define ONE_ROUND 2156 //输出轴转过一周的脉冲数
+        #define ONE_CLASS 2156 //一个档位的脉冲数量
+        #define HALF_CLASS 100
+        #define MAX_I 0.13f
+        #define DELAY_MS 10
+        #define PARA_ENCODER 14.28f //(DELAY_HZ)100*2pi/44 11线编码器
+
+inline void PysbMotorPositionSampling();
+inline void PysbMotorSpeedSampling();
+inline void PysbMotorPositionSet();
+/* inline void PysbMotorSpeedSet(); */
+void PysbMotorPositionControl();
+void PysbMotorSpeedControl();
 
 void app_main(void)
 {
@@ -42,9 +81,9 @@ void app_main(void)
     {
     uint32_t pcnt_unit = 0;
     rotary_encoder_config_t config = ROTARY_ENCODER_DEFAULT_CONFIG((rotary_encoder_dev_t)pcnt_unit, 39, 36);
-    ESP_ERROR_CHECK(rotary_encoder_new_ec11(&config, &g_encoder));
-    ESP_ERROR_CHECK(g_encoder->set_glitch_filter(g_encoder, 1));
-    ESP_ERROR_CHECK(g_encoder->start(g_encoder));
+    ESP_ERROR_CHECK(rotary_encoder_new_ec11(&config, &encoder));
+    ESP_ERROR_CHECK(encoder->set_glitch_filter(encoder, 1));
+    ESP_ERROR_CHECK(encoder->start(encoder));
     }
    
     ESP_ERROR_CHECK(mcpwm_gpio_init(MCPWM_UNIT_0, MCPWM0A, 22));
@@ -56,7 +95,7 @@ void app_main(void)
     MCPWM0.operators[0].gen_stmp_cfg.gen_b_shdw_full = 1;
 
     mcpwm_config_t pwm_config;
-    pwm_config.frequency = 40000;
+    pwm_config.frequency = 4000;
     pwm_config.cmpr_a = 0;
     pwm_config.cmpr_b = 0;
     pwm_config.counter_mode =  MCPWM_UP_DOWN_COUNTER;
@@ -65,12 +104,21 @@ void app_main(void)
 
     power_queue = xQueueCreate(1, sizeof(int32_t));
     position_queue = xQueueCreate(1, sizeof(float));
+    /* distence_queue = xQueueCreate(1, sizeof(int32_t)); */
 
     MCPWM0.int_ena.val = MCPWM_TIMER0_TEZ_INT_ENA;
     ESP_ERROR_CHECK(mcpwm_isr_register(MCPWM_UNIT_0, pwm_isr, NULL, ESP_INTR_FLAG_IRAM, NULL));
 /*     ESP_ERROR_CHECK(mcpwm_isr_register(MCPWM_UNIT_0, position_isr, NULL, ESP_INTR_FLAG_IRAM, NULL)); */
    /*  xTaskCreate(current_thread, "current_thread", 4095, NULL, 5, NULL); */
-    xTaskCreate(power_thread, "power_thread", 4095, NULL, 5, NULL);
+   xTaskCreate(position_thread, "position_thread", 4095, NULL, 5, NULL);
+   /* xTaskCreate(display_thread, "display_thread", 4095, NULL, 5, NULL); */
+    xTaskCreate(power_thread, "power_thread", 4095, NULL, 5, NULL);    
+    printf("g_adc_offset:%d\n",g_adc_offset);
+    while(1){
+        printf("cube.distence_cnt:%d\n",cube.distence_cnt);
+        vTaskDelay(1000/portTICK_RATE_MS);
+        /* gpio_set_levl(GPIO_OUTPUT_IO_0,cube.distence_cnt) */
+    }
 }
 
 static void IRAM_ATTR pwm_isr(void *arg)
@@ -88,87 +136,120 @@ static void IRAM_ATTR pwm_isr(void *arg)
     portYIELD_FROM_ISR(high_task_awoken);
 }
 
-/* static void IRAM_ATTR position_isr(void *arg)
-{
-    uint32_t mcpwm_intr_status;
-    int16_t p_current=0;
-    int16_t p_error=0;
-    int16_t p_raw=0;
-    mcpwm_intr_status = MCPWM0.int_st.val;
-    BaseType_t high_task_awoken = pdFALSE;
-    uint32_t counter=0;
-    float i_target;
-    if (mcpwm_intr_status & MCPWM_TIMER0_TEZ_INT_ENA)
-    {
-        gpio_set_level(GPIO_NUM_21, 1);
-        p_raw=g_encoder->get_counter_value(g_encoder);//读取
-        p_current+=p_raw;
-        if(p_current>SINGLE_STEP){
-            int8_t cnt=p_current/SINGLE_STEP;
-            counter+=cnt;
-            p_current=p_current-cnt*SINGLE_STEP;
-        }
-        if(p_current>HALF_STEP){
-            p_error=-p_current;
-            i_target=p_error * MAX_I / HALF_STEP;
-        }
-        else{
-            p_error=p_current;
-            i_target=p_error*MAX_I / HALF_STEP;
-        }//计算
-        g_encoder->del(g_encoder);
-        xQueueSendFromISR(position_queue, &i_target, &high_task_awoken);
-    }
-    MCPWM0.int_clr.val = mcpwm_intr_status;
-    portYIELD_FROM_ISR(high_task_awoken);
-} */
-#define ONE_ROUND 44 //电机轴转过一周的脉冲数
-#define ONE_CIRCLE 49*44//输出轴转过一周的脉冲数
-#define ONE_CLASS 49*44 //一个档位的脉冲数量
-#define HALF_CLASS 8*44
-#define MAX_I 0.13f
-#define DELAY_MS 10
-
 /* 输入一个角度，返回一个目标脉冲数 */
 int16_t position_set(float angle){
-    int16_t pos_target=angle/360*ONE_CIRCLE;
-    return pos_target;
+    cube.pos_target=angle*5.95277778+493;
+    return cube.pos_target;
 }
 
 void position_thread(void *arg){
-    int16_t round_cnt=0;//电机转轴旋转圈数
-    int16_t pul_cnt=0;//脉冲总个数
-    int16_t distence_cnt=0;//与目标位置的距离
-    int16_t class_cnt=0;//记录当前档位
-    float i_target;
+    cube.pos_target=position_set(180);
+    while(motor_speed_status!=2){
+        PysbMotorPositionSampling();
 
-    int16_t pos_target=position_set(180);//设定转动角度
+        PysbMotorPositionSet();
 
-    while(motor_status!=2){
-        pul_cnt=g_encoder->get_counter_value(g_encoder);
+        PysbMotorPositionControl();
 
-        round_cnt=pul_cnt/44;
+        xQueueSend(position_queue, &i_target, portMAX_DELAY);
+    }
+}
 
-        distence_cnt=pul_cnt-pos_target;
+inline void PysbMotorInit(){
 
-        if(distence_cnt>HALF_CLASS){
-            i_target=(float)(distence_cnt-HALF_CLASS)/HALF_CLASS*0.13f;
+}
+
+inline void PysbMotorSpeedSampling(){
+        enc_cnt_1 = encoder->get_counter_value(encoder);
+        v_current = (float)(enc_cnt_1 - enc_cnt_0) * PARA_ENCODER; 
+        enc_cnt_1 = enc_cnt_0;
+        switch ((int)v_current)
+        {
+        case 1:
+            motor_speed_status=1;
+            break;
+        case 2:
+            motor_speed_status=2;
+            break;
+        case 3:
+            motor_speed_status=3;
+            break;
+        default:
+            break;
         }
-        else if(distence_cnt<-HALF_CLASS){
-            i_target=(float)(distence_cnt+HALF_CLASS)/HALF_CLASS*0.13f;
+}
+
+inline void PysbMotorPositionSampling(){
+    enc_cnt_1=encoder->get_counter_value(encoder);
+}
+
+inline void PysbMotorPositionSet(){
+    cube.distence_cnt=enc_cnt_1-cube.pos_target;
+    if(enc_cnt_1==0){
+        cube.motor_position_status=0;
+    }
+    else if(enc_cnt_1>0){
+        cube.motor_position_status=1;
+        cube.class_cnt=enc_cnt_1/ONE_CLASS;
+    }//正转
+    else{
+        cube.motor_position_status=2;
+        cube.class_cnt=enc_cnt_1/ONE_CLASS-1;
+    }//enc_cnt_1<0，反转
+    
+    cube.degree_cnt=enc_cnt_1-cube.class_cnt*ONE_CLASS;
+}
+
+void PysbMotorPositionControl(){
+    cube.distence_cnt=enc_cnt_1-cube.pos_target;
+        if(cube.distence_cnt>0){
+            i_target=pow(((float)cube.distence_cnt/(float)HALF_CLASS),3)*0.3f;
         }
-        else if(distence_cnt<HALF_CLASS&&distence_cnt>0){
-            i_target=-(float)distence_cnt/HALF_CLASS*0.13f;
-        }
-        else if(distence_cnt<0&&distence_cnt>-HALF_CLASS){
-            i_target=-(float)distence_cnt/HALF_CLASS*0.13f;
+        else if(cube.distence_cnt<0){
+            i_target=pow(((float)cube.distence_cnt/(float)HALF_CLASS),3)*0.3f;
         }
         else{
             i_target=0;
         }
-        xQueueSend(position_queue, &i_target, portMAX_DELAY);
-    }
 }
+
+void PysbMotorSpeedControl(){
+    v_error = v_target - v_current;
+    if (v_error < -50.0f){
+        v_target += 40.0f;
+    }
+    else if (v_error > 50.0f){
+        v_target -= 40.0f;
+    }//refresh v_target
+
+    if (v_target > MAX_V){
+        v_target = MAX_V;
+    }
+    else if (v_target < -MAX_V){
+        v_target = -MAX_V;
+    }
+
+        if (!motor_speed_status)
+        {
+            e_sum += v_error;
+        }
+        if (v_target > MIN_V || v_target < -MIN_V)//we only control current if velocity is high enough
+            i_target = v_error * PID_P_V + e_sum * PID_I_V;
+        else
+        {
+            i_target = 0;
+            e_sum = 0;
+        }
+
+        //设定最大电流，同时也检测v_error是否反向了
+        if (i_target >= MAX_I){
+            i_target = MAX_I;
+        } //rotating B direction
+        if (i_target <= -MAX_I) {
+            i_target = -MAX_I;
+        }
+}
+
 
 void power_thread(void *arg)
 {
@@ -184,29 +265,13 @@ void power_thread(void *arg)
             float i_current = (float)(raw_val - g_adc_offset) * 0.000634921f;	//raw_val to current(A);
             float i_error = i_target - i_current;
 
-            static float e_sum = 0;
-            static uint8_t windup = 0;//占空比设置标志位
-            
-            if (windup!=0){
-                e_sum += i_error;
-            }
-            else{
-                e_sum=0;
-            }
-            u = i_error *8+ e_sum*2.4;//P=9.5425f,I=2.3762
+            u = i_error *8;//P=9.5425f,I=2.3762
             if (u > 4.99f){
                 u = 4.99f;
-                windup = 1;
             }
-            else if (u < -4.99f){
+            if (u < -4.99f){
                 u = -4.99f;
-                windup = 2;
             }
-            else{
-                windup = 0;
-            }
-            /* ESP_LOGI(TAG2, "i_current: %f", i_current); */
-            /* ESP_LOGI(TAG2, "Distence value: %d", distence_cnt); */
 
             mcpwm_set_duty(MCPWM_UNIT_0, MCPWM_TIMER_0, MCPWM_GEN_A, (1 - (u + 5.0f) / 10.0f) * 100);
             mcpwm_set_duty(MCPWM_UNIT_0, MCPWM_TIMER_0, MCPWM_GEN_B, (u + 5.0f) / 10.0f * 100);
