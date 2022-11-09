@@ -77,12 +77,31 @@ inline void PysbMotorPositionSet(struct position_handle position_struct);
 void PysbMotorPositionControl(struct position_handle position_struct);
 void PysbMotorSpeedControl();
 
+//demo
+void restart();
+void set_velocity(v1);//设置三档转速
+void rotate();//转180和360
+void stalls();//设置档位2，3，4
+void ratchet_wheel();
+
 void app_main(void)
 {
     PysbMotorInit();
 
+    printf("\n =================================================================\n");
+    printf(" |             Example of Motor Control                          |\n");
+    printf(" |                                                               |\n");
+    printf(" |  1. Try 'help', check all supported commands                  |\n");
+    printf(" |  2. Try 'config' to set control period or pwm frequency       |\n");
+    printf(" |  3. Try 'pid' to configure pid paremeters                     |\n");
+    printf(" |  4. Try 'expt' to set expectation value and mode              |\n");
+    printf(" |  5. Try 'motor' to start motor in several seconds or stop it  |\n");
+    printf(" |                                                               |\n");
+    printf(" =================================================================\n\n");
    /*  xTaskCreate(current_thread, "current_thread", 4095, NULL, 5, NULL); */
-   
+    
+
+
     xTaskCreate(position_restart_thread, "position_restart_thread", 4095, NULL, 5, NULL);
    
     xTaskCreate(power_thread, "power_thread", 4095, NULL, 5, NULL);    
