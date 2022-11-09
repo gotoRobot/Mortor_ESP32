@@ -29,9 +29,10 @@ int32_t g_adc_offset;
 struct position_handle{
     int8_t class_cnt;//记录当前档位
     int8_t degree_cnt;//当前档位分度值
-    int16_t distence_cnt;//与目标位置的距离
+    int16_t pos_error;//与目标位置的距离
     int16_t pos_target;//设定转动角度
     char motor_position_status;//0:无偏，1:正篇，2:负偏
+    int16_t pos_error_sum;
 };
     struct position_handle cube;
     struct position_handle impulse;
@@ -54,6 +55,10 @@ struct position_handle{
 
     int32_t g_adc_offset;
     float i_target;
+    float i_current;
+    float i_error;
+    float i_offset;
+    float u=0;
 
         #define ONE_ROUND 2156 //输出轴转过一周的脉冲数
         #define ONE_CLASS 2156 //一个档位的脉冲数量
@@ -73,11 +78,12 @@ void app_main(void)
 {
     ESP_ERROR_CHECK(adc1_config_width(ADC_WIDTH_BIT_12));
     ESP_ERROR_CHECK(adc1_config_channel_atten(ADC1_CHANNEL_7, ADC_ATTEN_DB_11));
-    for (uint8_t i = 0; i < 50; i++)
+    for (uint8_t i = 0; i < 100; i++)
     {
         g_adc_offset += adc1_get_raw(ADC1_CHANNEL_7);
     }
-    g_adc_offset /= 50;
+    g_adc_offset /= 100;
+    i_offset= g_adc_offset * 0.000634921f;
     {
     uint32_t pcnt_unit = 0;
     rotary_encoder_config_t config = ROTARY_ENCODER_DEFAULT_CONFIG((rotary_encoder_dev_t)pcnt_unit, 39, 36);
@@ -115,9 +121,13 @@ void app_main(void)
     xTaskCreate(power_thread, "power_thread", 4095, NULL, 5, NULL);    
     printf("g_adc_offset:%d\n",g_adc_offset);
     while(1){
-        printf("cube.distence_cnt:%d\n",cube.distence_cnt);
+        printf("cube.pos_error:%d\n",cube.pos_error);
+        printf("i_current:%f\n",i_current);
+        printf("i_error:%f\n",i_error);
+        printf("i_target:%f\n",i_target);
+        printf("u:%f\n",u);
         vTaskDelay(1000/portTICK_RATE_MS);
-        /* gpio_set_levl(GPIO_OUTPUT_IO_0,cube.distence_cnt) */
+        /* gpio_set_levl(GPIO_OUTPUT_IO_0,cube.pos_error) */
     }
 }
 
@@ -138,7 +148,7 @@ static void IRAM_ATTR pwm_isr(void *arg)
 
 /* 输入一个角度，返回一个目标脉冲数 */
 int16_t position_set(float angle){
-    cube.pos_target=angle*5.95277778+493;
+    cube.pos_target=angle*5.95277778;
     return cube.pos_target;
 }
 
@@ -184,7 +194,7 @@ inline void PysbMotorPositionSampling(){
 }
 
 inline void PysbMotorPositionSet(){
-    cube.distence_cnt=enc_cnt_1-cube.pos_target;
+    cube.pos_error=enc_cnt_1-cube.pos_target;
     if(enc_cnt_1==0){
         cube.motor_position_status=0;
     }
@@ -199,18 +209,36 @@ inline void PysbMotorPositionSet(){
     
     cube.degree_cnt=enc_cnt_1-cube.class_cnt*ONE_CLASS;
 }
-
+#define k1 0.0241f
+#define k2 0.000000241f
 void PysbMotorPositionControl(){
-    cube.distence_cnt=enc_cnt_1-cube.pos_target;
-        if(cube.distence_cnt>0){
-            i_target=pow(((float)cube.distence_cnt/(float)HALF_CLASS),3)*0.3f;
+    cube.pos_error=enc_cnt_1-cube.pos_target;
+    /* while(cube.pos_error>-412&&cube.pos_error<-514)
+    {
+        cube.pos_error_sum+=cube.pos_error;
+    } */
+        if(cube.pos_error>20&&cube.pos_error<=22){
+            i_target=-0.625;
         }
-        else if(cube.distence_cnt<0){
-            i_target=pow(((float)cube.distence_cnt/(float)HALF_CLASS),3)*0.3f;
+        else if(cube.pos_error>0&&cube.pos_error<=20){
+            i_target=0;;
         }
-        else{
+         else if(cube.pos_error>22&&cube.pos_error<500){
+            i_target=k2*(cube.pos_error-22)+0.53;
+        }
+        else if(cube.pos_error<-20&&cube.pos_error>=-22){
+            i_target=0.625;;
+        }
+        else if(cube.pos_error<0&&cube.pos_error>=-20){
             i_target=0;
         }
+        else if(cube.pos_error<-22&&cube.pos_error>-500){
+            i_target=k2*(cube.pos_error+22)-0.53;
+        }
+        else{
+            i_target=(((float)cube.pos_error/(float)HALF_CLASS))*1.5f;
+        }
+
 }
 
 void PysbMotorSpeedControl(){
@@ -248,6 +276,7 @@ void PysbMotorSpeedControl(){
         if (i_target <= -MAX_I) {
             i_target = -MAX_I;
         }
+        
 }
 
 
@@ -257,22 +286,22 @@ void power_thread(void *arg)
     xLastWakeTime = xTaskGetTickCount();
     float raw_val;
     float i_target;
-    float u=0;//
+    //
     while (1) {
         if (xQueueReceive(power_queue, &raw_val, portMAX_DELAY) == pdTRUE)
         {
             xQueueReceive(position_queue,&i_target,portMAX_DELAY);
-            float i_current = (float)(raw_val - g_adc_offset) * 0.000634921f;	//raw_val to current(A);
-            float i_error = i_target - i_current;
-
-            u = i_error *8;//P=9.5425f,I=2.3762
+            i_current = (float)(raw_val) * 0.000634921f;	//raw_val to current(A);
+            i_error = i_target - i_current;
+            /* if(i_error<0&&i_error>-0.53f){i_error=-0.30;}
+            if(i_error>0&&i_error<0.53){i_error=0.30;} */
+            u =8*i_error;//P=9.5425f,I=2.3762
             if (u > 4.99f){
                 u = 4.99f;
             }
             if (u < -4.99f){
                 u = -4.99f;
             }
-
             mcpwm_set_duty(MCPWM_UNIT_0, MCPWM_TIMER_0, MCPWM_GEN_A, (1 - (u + 5.0f) / 10.0f) * 100);
             mcpwm_set_duty(MCPWM_UNIT_0, MCPWM_TIMER_0, MCPWM_GEN_B, (u + 5.0f) / 10.0f * 100);
 
