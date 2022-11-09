@@ -19,7 +19,11 @@
 static void pwm_isr(void *arg);
 /* static void current_thread(void *arg); */
 static void power_thread(void *arg);
-static void position_thread(void *arg);
+static void position_restart_thread(void *arg);//将encoder复位
+
+void PysbMotorInitA();//初始化ESP32电机中断，GPIO，电流偏差等
+void PysbMotorInit();
+void PysbMotorInitB();//初始化数据结构体
 
 QueueHandle_t power_queue;
 QueueHandle_t position_queue;
@@ -34,9 +38,8 @@ struct position_handle{
     char motor_position_status;//0:无偏，1:正篇，2:负偏
     int16_t pos_error_sum;
 };
-    struct position_handle cube;
-    struct position_handle impulse;
-
+struct position_handle position_struct1;
+struct position_handle position_struct2;
     /* basic encoder */
     rotary_encoder_t *encoder = NULL;
     int16_t enc_cnt_1;//目前的脉冲数
@@ -69,65 +72,29 @@ struct position_handle{
 
 inline void PysbMotorPositionSampling();
 inline void PysbMotorSpeedSampling();
-inline void PysbMotorPositionSet();
+inline void PysbMotorPositionSet(struct position_handle position_struct);
 /* inline void PysbMotorSpeedSet(); */
-void PysbMotorPositionControl();
+void PysbMotorPositionControl(struct position_handle position_struct);
 void PysbMotorSpeedControl();
 
 void app_main(void)
 {
-    ESP_ERROR_CHECK(adc1_config_width(ADC_WIDTH_BIT_12));
-    ESP_ERROR_CHECK(adc1_config_channel_atten(ADC1_CHANNEL_7, ADC_ATTEN_DB_11));
-    for (uint8_t i = 0; i < 100; i++)
-    {
-        g_adc_offset += adc1_get_raw(ADC1_CHANNEL_7);
-    }
-    g_adc_offset /= 100;
-    i_offset= g_adc_offset * 0.000634921f;
-    {
-    uint32_t pcnt_unit = 0;
-    rotary_encoder_config_t config = ROTARY_ENCODER_DEFAULT_CONFIG((rotary_encoder_dev_t)pcnt_unit, 39, 36);
-    ESP_ERROR_CHECK(rotary_encoder_new_ec11(&config, &encoder));
-    ESP_ERROR_CHECK(encoder->set_glitch_filter(encoder, 1));
-    ESP_ERROR_CHECK(encoder->start(encoder));
-    }
-   
-    ESP_ERROR_CHECK(mcpwm_gpio_init(MCPWM_UNIT_0, MCPWM0A, 22));
-    ESP_ERROR_CHECK(mcpwm_gpio_init(MCPWM_UNIT_0, MCPWM0B, 23));
+    PysbMotorInit();
 
-    MCPWM0.operators[0].gen_stmp_cfg.gen_a_upmethod = 1;
-    MCPWM0.operators[0].gen_stmp_cfg.gen_b_upmethod = 1;
-    MCPWM0.operators[0].gen_stmp_cfg.gen_a_shdw_full = 1;
-    MCPWM0.operators[0].gen_stmp_cfg.gen_b_shdw_full = 1;
-
-    mcpwm_config_t pwm_config;
-    pwm_config.frequency = 4000;
-    pwm_config.cmpr_a = 0;
-    pwm_config.cmpr_b = 0;
-    pwm_config.counter_mode =  MCPWM_UP_DOWN_COUNTER;
-    pwm_config.duty_mode = MCPWM_DUTY_MODE_1;
-    ESP_ERROR_CHECK(mcpwm_init(MCPWM_UNIT_0, MCPWM_TIMER_0, &pwm_config));
-
-    power_queue = xQueueCreate(1, sizeof(int32_t));
-    position_queue = xQueueCreate(1, sizeof(float));
-    /* distence_queue = xQueueCreate(1, sizeof(int32_t)); */
-
-    MCPWM0.int_ena.val = MCPWM_TIMER0_TEZ_INT_ENA;
-    ESP_ERROR_CHECK(mcpwm_isr_register(MCPWM_UNIT_0, pwm_isr, NULL, ESP_INTR_FLAG_IRAM, NULL));
-/*     ESP_ERROR_CHECK(mcpwm_isr_register(MCPWM_UNIT_0, position_isr, NULL, ESP_INTR_FLAG_IRAM, NULL)); */
    /*  xTaskCreate(current_thread, "current_thread", 4095, NULL, 5, NULL); */
-   xTaskCreate(position_thread, "position_thread", 4095, NULL, 5, NULL);
-   /* xTaskCreate(display_thread, "display_thread", 4095, NULL, 5, NULL); */
+   
+    xTaskCreate(position_restart_thread, "position_restart_thread", 4095, NULL, 5, NULL);
+   
     xTaskCreate(power_thread, "power_thread", 4095, NULL, 5, NULL);    
     printf("g_adc_offset:%d\n",g_adc_offset);
     while(1){
-        printf("cube.pos_error:%d\n",cube.pos_error);
-        printf("i_current:%f\n",i_current);
+        printf("position_struct1.pos_error:%d\n",position_struct1.pos_error);
+
         printf("i_error:%f\n",i_error);
-        printf("i_target:%f\n",i_target);
+
         printf("u:%f\n",u);
         vTaskDelay(1000/portTICK_RATE_MS);
-        /* gpio_set_levl(GPIO_OUTPUT_IO_0,cube.pos_error) */
+        
     }
 }
 
@@ -146,29 +113,67 @@ static void IRAM_ATTR pwm_isr(void *arg)
     portYIELD_FROM_ISR(high_task_awoken);
 }
 
-/* 输入一个角度，返回一个目标脉冲数 */
-int16_t position_set(float angle){
-    cube.pos_target=angle*5.95277778;
-    return cube.pos_target;
+inline void PysbMotorInit(){
+    PysbMotorInitA();
+    PysbMotorInitB();
 }
 
-void position_thread(void *arg){
-    cube.pos_target=position_set(180);
+inline void PysbMotorInitA(){
+    adc1_config_width(ADC_WIDTH_BIT_12);
+    adc1_config_channel_atten(ADC1_CHANNEL_7, ADC_ATTEN_DB_11);
+    for (uint8_t i = 0; i < 100; i++)
+    {
+        g_adc_offset += adc1_get_raw(ADC1_CHANNEL_7);
+    }
+    g_adc_offset /= 100;
+    i_offset= g_adc_offset * 0.000634921f;
+    {
+    uint32_t pcnt_unit = 0;
+    rotary_encoder_config_t config = ROTARY_ENCODER_DEFAULT_CONFIG((rotary_encoder_dev_t)pcnt_unit, 39, 36);
+    rotary_encoder_new_ec11(&config, &encoder);
+    encoder->set_glitch_filter(encoder, 1);
+    encoder->start(encoder);
+    }
+   
+    mcpwm_gpio_init(MCPWM_UNIT_0, MCPWM0A, 22);
+    mcpwm_gpio_init(MCPWM_UNIT_0, MCPWM0B, 23);
+
+    MCPWM0.operators[0].gen_stmp_cfg.gen_a_upmethod = 1;
+    MCPWM0.operators[0].gen_stmp_cfg.gen_b_upmethod = 1;
+    MCPWM0.operators[0].gen_stmp_cfg.gen_a_shdw_full = 1;
+    MCPWM0.operators[0].gen_stmp_cfg.gen_b_shdw_full = 1;
+
+    mcpwm_config_t pwm_config;
+    pwm_config.frequency = 4000;
+    pwm_config.cmpr_a = 0;
+    pwm_config.cmpr_b = 0;
+    pwm_config.counter_mode =  MCPWM_UP_DOWN_COUNTER;
+    pwm_config.duty_mode = MCPWM_DUTY_MODE_1;
+    mcpwm_init(MCPWM_UNIT_0, MCPWM_TIMER_0, &pwm_config);
+
+    power_queue = xQueueCreate(1, sizeof(int32_t));
+    position_queue = xQueueCreate(1, sizeof(float));
+
+    MCPWM0.int_ena.val = MCPWM_TIMER0_TEZ_INT_ENA;
+    mcpwm_isr_register(MCPWM_UNIT_0, pwm_isr, NULL, ESP_INTR_FLAG_IRAM, NULL);
+}
+
+inline void PysbMotorInitB(){
+    
+}
+
+void position_restart_thread(void *arg){
+    position_struct1.pos_target=0*5.95277778f;
     while(motor_speed_status!=2){
         PysbMotorPositionSampling();
 
-        PysbMotorPositionSet();
+        PysbMotorPositionSet(position_struct1);
 
-        PysbMotorPositionControl();
+        PysbMotorPositionControl(position_struct1);
 
         xQueueSend(position_queue, &i_target, portMAX_DELAY);
     }
 }
-
-inline void PysbMotorInit(){
-
-}
-
 inline void PysbMotorSpeedSampling(){
         enc_cnt_1 = encoder->get_counter_value(encoder);
         v_current = (float)(enc_cnt_1 - enc_cnt_0) * PARA_ENCODER; 
@@ -193,50 +198,53 @@ inline void PysbMotorPositionSampling(){
     enc_cnt_1=encoder->get_counter_value(encoder);
 }
 
-inline void PysbMotorPositionSet(){
-    cube.pos_error=enc_cnt_1-cube.pos_target;
+inline void PysbMotorPositionSet(struct position_handle position_struct){
+    position_struct.pos_error=enc_cnt_1-position_struct.pos_target;
     if(enc_cnt_1==0){
-        cube.motor_position_status=0;
+        position_struct.motor_position_status=0;
     }
     else if(enc_cnt_1>0){
-        cube.motor_position_status=1;
-        cube.class_cnt=enc_cnt_1/ONE_CLASS;
+        position_struct.motor_position_status=1;
+        position_struct.class_cnt=enc_cnt_1/ONE_CLASS;
     }//正转
     else{
-        cube.motor_position_status=2;
-        cube.class_cnt=enc_cnt_1/ONE_CLASS-1;
+        position_struct.motor_position_status=2;
+        position_struct.class_cnt=enc_cnt_1/ONE_CLASS-1;
     }//enc_cnt_1<0，反转
     
-    cube.degree_cnt=enc_cnt_1-cube.class_cnt*ONE_CLASS;
+    position_struct.degree_cnt=enc_cnt_1-position_struct.class_cnt*ONE_CLASS;
 }
 #define k1 0.0241f
 #define k2 0.000000241f
-void PysbMotorPositionControl(){
-    cube.pos_error=enc_cnt_1-cube.pos_target;
-    /* while(cube.pos_error>-412&&cube.pos_error<-514)
+void PysbMotorPositionControl(struct position_handle position_struct){
+    position_struct.pos_error=enc_cnt_1-position_struct.pos_target;
+    /* while(position_struct.pos_error>-412&&position_struct.pos_error<-514)
     {
-        cube.pos_error_sum+=cube.pos_error;
+        position_struct.pos_error_sum+=position_struct.pos_error;
     } */
-        if(cube.pos_error>20&&cube.pos_error<=22){
-            i_target=-0.625;
-        }
-        else if(cube.pos_error>0&&cube.pos_error<=20){
-            i_target=0;;
-        }
-         else if(cube.pos_error>22&&cube.pos_error<500){
-            i_target=k2*(cube.pos_error-22)+0.53;
-        }
-        else if(cube.pos_error<-20&&cube.pos_error>=-22){
-            i_target=0.625;;
-        }
-        else if(cube.pos_error<0&&cube.pos_error>=-20){
+        if(position_struct.pos_error>15&&position_struct.pos_error<=22){
             i_target=0;
         }
-        else if(cube.pos_error<-22&&cube.pos_error>-500){
-            i_target=k2*(cube.pos_error+22)-0.53;
+        else if(position_struct.pos_error>0&&position_struct.pos_error<=15){
+            i_target=0;;
+        }
+         else if(position_struct.pos_error>22&&position_struct.pos_error<500){
+            i_target=k2*(position_struct.pos_error-22)+0.53;
+        }
+        else if(position_struct.pos_error<15&&position_struct.pos_error>=-22){
+            i_target=0;;
+        }
+        else if(position_struct.pos_error<0&&position_struct.pos_error>=-15){
+            i_target=0;
+        }
+        else if(position_struct.pos_error<-22&&position_struct.pos_error>-500){
+            i_target=k2*(position_struct.pos_error+22)-0.53;
+        }
+        else if(position_struct.pos_error==0){
+            i_target=0;
         }
         else{
-            i_target=(((float)cube.pos_error/(float)HALF_CLASS))*1.5f;
+            i_target=(((float)position_struct.pos_error/(float)HALF_CLASS))*1.5f;
         }
 
 }
@@ -301,7 +309,7 @@ void power_thread(void *arg)
             }
             if (u < -4.99f){
                 u = -4.99f;
-            }
+            }//Attention! when doing position contorl Starting voltage of DC motor
             mcpwm_set_duty(MCPWM_UNIT_0, MCPWM_TIMER_0, MCPWM_GEN_A, (1 - (u + 5.0f) / 10.0f) * 100);
             mcpwm_set_duty(MCPWM_UNIT_0, MCPWM_TIMER_0, MCPWM_GEN_B, (u + 5.0f) / 10.0f * 100);
 
