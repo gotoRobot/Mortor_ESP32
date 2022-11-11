@@ -15,22 +15,8 @@
 #include "rotary_encoder.h"
 #include <math.h>
 
-/* static void position_isr(void *arg); */
-static void pwm_isr(void *arg);
-/* static void current_thread(void *arg); */
-static void power_thread(void *arg);
-static void position_restart_thread(void *arg);//将encoder复位
-
-void PysbMotorInitA();//初始化ESP32电机中断，GPIO，电流偏差等
-void PysbMotorInit();
-void PysbMotorInitB();//初始化数据结构体
-
-QueueHandle_t power_queue;
-QueueHandle_t position_queue;
-/* QueueHandle_t distence_queue; */
-int32_t g_adc_offset;
-
 struct position_handle{
+    int8_t angle;
     int8_t class_cnt;//记录当前档位
     int8_t degree_cnt;//当前档位分度值
     int16_t pos_error;//与目标位置的距离
@@ -40,6 +26,7 @@ struct position_handle{
 };
 struct position_handle position_struct1;
 struct position_handle position_struct2;
+struct position_handle *position_struct;
     /* basic encoder */
     rotary_encoder_t *encoder = NULL;
     int16_t enc_cnt_1;//目前的脉冲数
@@ -63,12 +50,27 @@ struct position_handle position_struct2;
     float i_offset;
     float u=0;
 
-        #define ONE_ROUND 2156 //输出轴转过一周的脉冲数
-        #define ONE_CLASS 2156 //一个档位的脉冲数量
-        #define HALF_CLASS 100
-        #define MAX_I 0.13f
-        #define DELAY_MS 10
-        #define PARA_ENCODER 14.28f //(DELAY_HZ)100*2pi/44 11线编码器
+    #define ONE_ROUND 2156 //输出轴转过一周的脉冲数
+    #define ONE_CLASS 2156 //一个档位的脉冲数量
+    #define HALF_CLASS 100
+    #define MAX_I 0.13f
+    #define DELAY_MS 10
+    #define PARA_ENCODER 14.28f //(DELAY_HZ)100*2pi/44 11线编码器
+
+/* static void position_isr(void *arg); */
+static void pwm_isr(void *arg);
+/* static void current_thread(void *arg); */
+static void power_thread(void *arg);
+static void position_restart_thread(struct position_handle *position_struct);//将encoder复位
+
+void PysbMotorInitA();//初始化ESP32电机中断，GPIO，电流偏差等
+void PysbMotorInit();
+void PysbMotorInitB();//初始化数据结构体
+
+QueueHandle_t power_queue;
+QueueHandle_t position_queue;
+/* QueueHandle_t distence_queue; */
+int32_t g_adc_offset;
 
 inline void PysbMotorPositionSampling();
 inline void PysbMotorSpeedSampling();
@@ -100,9 +102,9 @@ void app_main(void)
     printf(" =================================================================\n\n");
    /*  xTaskCreate(current_thread, "current_thread", 4095, NULL, 5, NULL); */
     
+    position_struct=&position_struct1;
 
-
-    xTaskCreate(position_restart_thread, "position_restart_thread", 4095, NULL, 5, NULL);
+    xTaskCreate(position_restart_thread, "position_restart_thread", 4095, position_struct, 5, NULL);
    
     xTaskCreate(power_thread, "power_thread", 4095, NULL, 5, NULL);    
     printf("g_adc_offset:%d\n",g_adc_offset);
@@ -181,14 +183,14 @@ inline void PysbMotorInitB(){
     
 }
 
-void position_restart_thread(void *arg){
-    position_struct1.pos_target=0*5.95277778f;
+void position_restart_thread(struct position_handle *position_struct){
+    position_struct->pos_target=position_struct->angle*5.95277778f;
     while(motor_speed_status!=2){
         PysbMotorPositionSampling();
 
-        PysbMotorPositionSet(position_struct1);
+        PysbMotorPositionSet(*position_struct);
 
-        PysbMotorPositionControl(position_struct1);
+        PysbMotorPositionControl(*position_struct);
 
         xQueueSend(position_queue, &i_target, portMAX_DELAY);
     }
