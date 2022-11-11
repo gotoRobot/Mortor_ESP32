@@ -16,20 +16,33 @@
 #include <math.h>
 
 struct position_handle{
-    int8_t angle;
-    int8_t class_cnt;//记录当前档位
-    int8_t degree_cnt;//当前档位分度值
+    int16_t angle;//设定转动角度
+    char motor_position_status;//0:初始，1:正篇，2:负偏，4:无偏
     int16_t pos_error;//与目标位置的距离
-    int16_t pos_target;//设定转动角度
-    char motor_position_status;//0:无偏，1:正篇，2:负偏
-    int16_t pos_error_sum;
+    int16_t pos_target;
 };
 struct position_handle position_struct1;
 struct position_handle position_struct2;
 struct position_handle *position_struct;
+
+struct class_handle{
+    uint8_t num;
+    char motor_position_status;//0:初始，1:正篇，2:负偏，4:无偏
+    char motor_class_status;//0:初始，1:正篇，2:负偏，4:无偏
+    int16_t class_range;
+    int16_t half_class_range;
+    int16_t class_cnt;//记录当前档位
+    int8_t degree_cnt;//当前档位分度值
+    int16_t enc_error;//与位置0的距离，用于划分当前的分区
+    int16_t pos_error;//与目标位置的距离
+    int16_t pos_target;
+};
+struct class_handle class_struct1={3,0,0};
+struct class_handle * class_struct;
+
     /* basic encoder */
     rotary_encoder_t *encoder = NULL;
-    int16_t enc_cnt_1;//目前的脉冲数
+    int16_t enc_cnt;//目前的脉冲数
     int16_t enc_cnt_0;//上一个速度周期脉冲数
     char clockwise;//旋转方向
 
@@ -61,23 +74,25 @@ struct position_handle *position_struct;
 static void pwm_isr(void *arg);
 /* static void current_thread(void *arg); */
 static void power_thread(void *arg);
-static void position_restart_thread(struct position_handle *position_struct);//将encoder复位
+static void position_thread(struct position_handle *position_struct);//将encoder复位
+static void class_thread(struct class_handle *class_struct);
 
 void PysbMotorInitA();//初始化ESP32电机中断，GPIO，电流偏差等
 void PysbMotorInit();
 void PysbMotorInitB();//初始化数据结构体
 
+inline void PysbMotorPositionSampling();
+inline void PysbMotorSpeedSampling();
+inline void PysbMotorPositionSet(struct position_handle * position_struct);
+/* inline void PysbMotorSpeedSet(); */
+void PysbMotorPositionControl(struct position_handle * position_struct);
+inline void PysbMotorClassPositionSet(struct class_handle * class_struct);
+void PysbMotorSpeedControl();
+
 QueueHandle_t power_queue;
 QueueHandle_t position_queue;
 /* QueueHandle_t distence_queue; */
-int32_t g_adc_offset;
-
-inline void PysbMotorPositionSampling();
-inline void PysbMotorSpeedSampling();
-inline void PysbMotorPositionSet(struct position_handle position_struct);
-/* inline void PysbMotorSpeedSet(); */
-void PysbMotorPositionControl(struct position_handle position_struct);
-void PysbMotorSpeedControl();
+int32_t g_adc_offset; 
 
 //demo
 void restart();
@@ -85,54 +100,6 @@ void set_velocity(v1);//设置三档转速
 void rotate();//转180和360
 void stalls();//设置档位2，3，4
 void ratchet_wheel();
-
-void app_main(void)
-{
-    PysbMotorInit();
-
-    printf("\n =================================================================\n");
-    printf(" |             Example of Motor Control                          |\n");
-    printf(" |                                                               |\n");
-    printf(" |  1. Try 'help', check all supported commands                  |\n");
-    printf(" |  2. Try 'config' to set control period or pwm frequency       |\n");
-    printf(" |  3. Try 'pid' to configure pid paremeters                     |\n");
-    printf(" |  4. Try 'expt' to set expectation value and mode              |\n");
-    printf(" |  5. Try 'motor' to start motor in several seconds or stop it  |\n");
-    printf(" |                                                               |\n");
-    printf(" =================================================================\n\n");
-   /*  xTaskCreate(current_thread, "current_thread", 4095, NULL, 5, NULL); */
-    
-    position_struct=&position_struct1;
-
-    xTaskCreate(position_restart_thread, "position_restart_thread", 4095, position_struct, 5, NULL);
-   
-    xTaskCreate(power_thread, "power_thread", 4095, NULL, 5, NULL);    
-    printf("g_adc_offset:%d\n",g_adc_offset);
-    while(1){
-        printf("position_struct1.pos_error:%d\n",position_struct1.pos_error);
-
-        printf("i_error:%f\n",i_error);
-
-        printf("u:%f\n",u);
-        vTaskDelay(1000/portTICK_RATE_MS);
-        
-    }
-}
-
-static void IRAM_ATTR pwm_isr(void *arg)
-{
-    uint32_t mcpwm_intr_status;
-    int32_t raw_val;
-    mcpwm_intr_status = MCPWM0.int_st.val;
-    BaseType_t high_task_awoken = pdFALSE;
-    if (mcpwm_intr_status & MCPWM_TIMER0_TEZ_INT_ENA)
-    {
-        raw_val = adc1_get_raw(ADC1_CHANNEL_7);
-        xQueueSendFromISR(power_queue, &raw_val, &high_task_awoken);
-    }
-    MCPWM0.int_clr.val = mcpwm_intr_status;
-    portYIELD_FROM_ISR(high_task_awoken);
-}
 
 inline void PysbMotorInit(){
     PysbMotorInitA();
@@ -180,25 +147,177 @@ inline void PysbMotorInitA(){
 }
 
 inline void PysbMotorInitB(){
-    
+    struct position_handle position_struct1={
+        .angle=180,
+    };
 }
 
-void position_restart_thread(struct position_handle *position_struct){
+void app_main(void)
+{
+    PysbMotorInit();
+
+    printf("\n =================================================================\n");
+    printf(" |             Example of Motor Control                          |\n");
+    printf(" |                                                               |\n");
+    printf(" |  1. Try 'help', check all supported commands                  |\n");
+    printf(" |  2. Try 'config' to set control period or pwm frequency       |\n");
+    printf(" |  3. Try 'pid' to configure pid paremeters                     |\n");
+    printf(" |  4. Try 'expt' to set expectation value and mode              |\n");
+    printf(" |  5. Try 'motor' to start motor in several seconds or stop it  |\n");
+    printf(" |                                                               |\n");
+    printf(" =================================================================\n\n");
+   /*  xTaskCreate(current_thread, "current_thread", 4095, NULL, 5, NULL); */
+    
+    /* position_struct=&position_struct1; */
+    class_struct=&class_struct1;
+    /* xTaskCreate(position_thread, "position_thread", 4095, position_struct, 5, NULL); */
+
+    xTaskCreate(class_thread, "class_thread", 4095, class_struct, 5, NULL);
+
+    /* xTaskCreate(power_thread, "power_thread", 4095, NULL, 5, NULL); */
+
+    printf("g_adc_offset:%d\n",g_adc_offset);
+    while(1){
+        printf("class.enc_error:%d\n",class_struct1.enc_error);
+        printf("class.class_cnt:%d\n",class_struct1.class_cnt);
+        printf("class.degree_cnt:%d\n",class_struct1.degree_cnt);
+        /* printf("i_error:%f\n",i_error);
+
+        printf("u:%f\n",u); */
+        vTaskDelay(1000/portTICK_RATE_MS);
+        
+    }
+}
+
+static void IRAM_ATTR pwm_isr(void *arg)
+{
+    uint32_t mcpwm_intr_status;
+    int32_t raw_val;
+    mcpwm_intr_status = MCPWM0.int_st.val;
+    BaseType_t high_task_awoken = pdFALSE;
+    if (mcpwm_intr_status & MCPWM_TIMER0_TEZ_INT_ENA)
+    {
+        raw_val = adc1_get_raw(ADC1_CHANNEL_7);
+        xQueueSendFromISR(power_queue, &raw_val, &high_task_awoken);
+    }
+    MCPWM0.int_clr.val = mcpwm_intr_status;
+    portYIELD_FROM_ISR(high_task_awoken);
+}
+
+/*--------------------------------------------------------------------------------------------------------*/
+void position_thread(struct position_handle *position_struct){
     position_struct->pos_target=position_struct->angle*5.95277778f;
-    while(motor_speed_status!=2){
+    position_struct->motor_position_status=0;
+    while(1){
         PysbMotorPositionSampling();
 
-        PysbMotorPositionSet(*position_struct);
+        PysbMotorPositionSet(position_struct);
 
-        PysbMotorPositionControl(*position_struct);
+        PysbMotorPositionControl(position_struct);
 
         xQueueSend(position_queue, &i_target, portMAX_DELAY);
     }
 }
+
+void class_thread(struct class_handle *class_struct){
+    (*class_struct).class_range=ONE_ROUND/(*class_struct).num;
+    (*class_struct).half_class_range=(*class_struct).class_range/2;
+    while(1){
+        PysbMotorPositionSampling();
+        PysbMotorClassPositionSet(class_struct);
+    
+
+        /* xQueueSend(position_queue, &i_target, portMAX_DELAY); */
+    }
+    
+}
+
+inline void PysbMotorPositionSampling(){
+    enc_cnt=encoder->get_counter_value(encoder);
+}
+
+inline void PysbMotorPositionSet(struct position_handle * position_struct){
+    (*position_struct).pos_error=enc_cnt-(*position_struct).pos_target;
+    if((*position_struct).pos_error<=22&&(*position_struct).pos_error>-22){
+        (*position_struct).motor_position_status=0;
+    }
+    else if((*position_struct).pos_error>22){
+        (*position_struct).motor_position_status=1;
+    }//正转
+    else{
+        (*position_struct).motor_position_status=2;
+    }//enc_cnt<0，反转
+}
+
+//误差计算节点的切换，计算误差，设置档位和分度值
+inline void PysbMotorClassPositionSet(struct class_handle * class_struct){
+
+    /* (*class_struct).enc_error=(*class_struct).degree_cnt-(* class_struct).pos_target; */
+    (*class_struct).enc_error=enc_cnt;
+    if((* class_struct).enc_error==0){
+        (*class_struct).motor_position_status=0;
+    }
+    else if((*class_struct).enc_error>0){
+        (*class_struct).motor_position_status=1;
+    }//pos正偏
+    else{
+        (*class_struct).motor_position_status=2;
+    }//pos负偏
+
+    int16_t _enc_error=(*class_struct).enc_error+(*class_struct).half_class_range;
+
+    if((*class_struct).motor_position_status==4){
+        (* class_struct).motor_class_status=4;
+    }
+    else if((*class_struct).motor_position_status>0){
+        (* class_struct).motor_class_status=1;
+        (* class_struct).class_cnt=_enc_error/(*class_struct).class_range;
+    }//正转
+    else if((*class_struct).motor_position_status<0){
+        (* class_struct).motor_class_status=2;
+        (* class_struct).class_cnt=_enc_error/(*class_struct).class_range-1;
+    }//enc_cnt<0，反转
+    
+    (* class_struct).degree_cnt=enc_cnt-(* class_struct).class_cnt*(*class_struct).class_range;
+}
+
+#define k1 0.0241f
+#define k2 0.000000241f
+void PysbMotorPositionControl(struct position_handle *position_struct){
+    (*position_struct).pos_error=enc_cnt-(*position_struct).pos_target;
+        if((*position_struct).pos_error>15&&(*position_struct).pos_error<=22){
+            i_target=0;
+        }
+        else if((*position_struct).pos_error>0&&(*position_struct).pos_error<=15){
+            i_target=0;;
+        }
+         else if((*position_struct).pos_error>22&&(*position_struct).pos_error<500){
+            i_target=k2*((*position_struct).pos_error-22)+0.53;
+        }
+        else if((*position_struct).pos_error<15&&(*position_struct).pos_error>=-22){
+            i_target=0;;
+        }
+        else if((*position_struct).pos_error<0&&(*position_struct).pos_error>=-15){
+            i_target=0;
+        }
+        else if((*position_struct).pos_error<-22&&(*position_struct).pos_error>-500){
+            i_target=k2*((*position_struct).pos_error+22)-0.53;
+        }
+        else if((*position_struct).pos_error==0){
+            i_target=0;
+        }
+        else{
+            i_target=(((float)(*position_struct).pos_error/(float)HALF_CLASS))*1.5f;
+        }
+
+}
+
+/* ------------------------------------------------------------------------------------------------*/
+
 inline void PysbMotorSpeedSampling(){
-        enc_cnt_1 = encoder->get_counter_value(encoder);
-        v_current = (float)(enc_cnt_1 - enc_cnt_0) * PARA_ENCODER; 
-        enc_cnt_1 = enc_cnt_0;
+        enc_cnt = encoder->get_counter_value(encoder);
+        v_current = (float)(enc_cnt - enc_cnt_0) * PARA_ENCODER; 
+        enc_cnt = enc_cnt_0;
         switch ((int)v_current)
         {
         case 1:
@@ -213,61 +332,6 @@ inline void PysbMotorSpeedSampling(){
         default:
             break;
         }
-}
-
-inline void PysbMotorPositionSampling(){
-    enc_cnt_1=encoder->get_counter_value(encoder);
-}
-
-inline void PysbMotorPositionSet(struct position_handle position_struct){
-    position_struct.pos_error=enc_cnt_1-position_struct.pos_target;
-    if(enc_cnt_1==0){
-        position_struct.motor_position_status=0;
-    }
-    else if(enc_cnt_1>0){
-        position_struct.motor_position_status=1;
-        position_struct.class_cnt=enc_cnt_1/ONE_CLASS;
-    }//正转
-    else{
-        position_struct.motor_position_status=2;
-        position_struct.class_cnt=enc_cnt_1/ONE_CLASS-1;
-    }//enc_cnt_1<0，反转
-    
-    position_struct.degree_cnt=enc_cnt_1-position_struct.class_cnt*ONE_CLASS;
-}
-#define k1 0.0241f
-#define k2 0.000000241f
-void PysbMotorPositionControl(struct position_handle position_struct){
-    position_struct.pos_error=enc_cnt_1-position_struct.pos_target;
-    /* while(position_struct.pos_error>-412&&position_struct.pos_error<-514)
-    {
-        position_struct.pos_error_sum+=position_struct.pos_error;
-    } */
-        if(position_struct.pos_error>15&&position_struct.pos_error<=22){
-            i_target=0;
-        }
-        else if(position_struct.pos_error>0&&position_struct.pos_error<=15){
-            i_target=0;;
-        }
-         else if(position_struct.pos_error>22&&position_struct.pos_error<500){
-            i_target=k2*(position_struct.pos_error-22)+0.53;
-        }
-        else if(position_struct.pos_error<15&&position_struct.pos_error>=-22){
-            i_target=0;;
-        }
-        else if(position_struct.pos_error<0&&position_struct.pos_error>=-15){
-            i_target=0;
-        }
-        else if(position_struct.pos_error<-22&&position_struct.pos_error>-500){
-            i_target=k2*(position_struct.pos_error+22)-0.53;
-        }
-        else if(position_struct.pos_error==0){
-            i_target=0;
-        }
-        else{
-            i_target=(((float)position_struct.pos_error/(float)HALF_CLASS))*1.5f;
-        }
-
 }
 
 void PysbMotorSpeedControl(){
