@@ -15,21 +15,27 @@
 #include "rotary_encoder.h"
 #include <math.h>
 
+/**
+ * @brief 实现转动角度控制的结构体* 
+ */
 struct position_handle{
-    int16_t angle;//设定转动角度
+    int16_t angle;//设定转动角度，angle=0可以实现复位
     char motor_position_status;//0:初始，1:正篇，2:负偏，4:无偏
     int16_t pos_error;//与目标位置的距离
     int16_t pos_target;
 };
-struct position_handle position_struct1;
-struct position_handle position_struct2;
+struct position_handle position_struct1={0,0};
+struct position_handle position_struct2={360,0};
 struct position_handle *position_struct;
 
+/**
+ * @brief 进行档位设置的结构体 * 
+ */
 struct class_handle{
     uint8_t num;
     char motor_position_status;//0:初始，1:正篇，2:负偏，4:无偏
     char motor_class_status;//0:初始，1:正篇，2:负偏，4:无偏
-    int16_t class_range;
+    int16_t class_range;//记录一个档位大小
     int16_t half_class_range;
     int16_t class_cnt;//记录当前档位
     int16_t degree_cnt;//当前档位分度值
@@ -38,9 +44,10 @@ struct class_handle{
 struct class_handle class_struct1={3,0,0};
 struct class_handle * class_struct;
 
-    /* basic encoder */
-    rotary_encoder_t *encoder = NULL;
-    int16_t enc_cnt;//目前的脉冲数
+    /* encoder 作为全局变量记录当前编码器值*/
+rotary_encoder_t *encoder = NULL;
+int16_t enc_cnt;//目前的脉冲数
+
     int16_t enc_cnt_0;//上一个速度周期脉冲数
     char clockwise;//旋转方向
 
@@ -82,7 +89,6 @@ void PysbMotorInitB();//初始化数据结构体
 inline void PysbMotorPositionSampling();
 inline void PysbMotorSpeedSampling();
 inline void PysbMotorPositionSet(struct position_handle * position_struct);
-/* inline void PysbMotorSpeedSet(); */
 void PysbMotorPositionControl(struct position_handle * position_struct);
 inline void PysbMotorClassPositionSet(struct class_handle * class_struct);
 void PysbMotorClassPositionControl(struct class_handle * class_struct);
@@ -313,7 +319,7 @@ void PysbMotorPositionControl(struct position_handle *position_struct){
 void PysbMotorClassPositionControl(struct class_handle * class_struct){
 
         if((* class_struct).degree_cnt>15&&(* class_struct).degree_cnt<=22){
-            i_target=0;
+            i_target=-0.45;
         }
         else if((* class_struct).degree_cnt>0&&(* class_struct).degree_cnt<=15){
             i_target=0;;
@@ -321,8 +327,8 @@ void PysbMotorClassPositionControl(struct class_handle * class_struct){
          else if((* class_struct).degree_cnt>22&&(* class_struct).degree_cnt<500){
             i_target=k2*(-(* class_struct).degree_cnt-22)+0.53;
         }
-        else if((* class_struct).degree_cnt<15&&(* class_struct).degree_cnt>=-22){
-            i_target=0;
+        else if((* class_struct).degree_cnt<-15&&(* class_struct).degree_cnt>=-22){
+            i_target=0.45;
         }
         else if((* class_struct).degree_cnt<0&&(* class_struct).degree_cnt>=-15){
             i_target=0;
