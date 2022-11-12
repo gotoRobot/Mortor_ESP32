@@ -32,10 +32,8 @@ struct class_handle{
     int16_t class_range;
     int16_t half_class_range;
     int16_t class_cnt;//记录当前档位
-    int8_t degree_cnt;//当前档位分度值
+    int16_t degree_cnt;//当前档位分度值
     int16_t enc_error;//与位置0的距离，用于划分当前的分区
-    int16_t pos_error;//与目标位置的距离
-    int16_t pos_target;
 };
 struct class_handle class_struct1={3,0,0};
 struct class_handle * class_struct;
@@ -87,6 +85,7 @@ inline void PysbMotorPositionSet(struct position_handle * position_struct);
 /* inline void PysbMotorSpeedSet(); */
 void PysbMotorPositionControl(struct position_handle * position_struct);
 inline void PysbMotorClassPositionSet(struct class_handle * class_struct);
+void PysbMotorClassPositionControl(struct class_handle * class_struct);
 void PysbMotorSpeedControl();
 
 QueueHandle_t power_queue;
@@ -156,7 +155,7 @@ void app_main(void)
 {
     PysbMotorInit();
 
-    printf("\n =================================================================\n");
+   /*  printf("\n =================================================================\n");
     printf(" |             Example of Motor Control                          |\n");
     printf(" |                                                               |\n");
     printf(" |  1. Try 'help', check all supported commands                  |\n");
@@ -165,7 +164,7 @@ void app_main(void)
     printf(" |  4. Try 'expt' to set expectation value and mode              |\n");
     printf(" |  5. Try 'motor' to start motor in several seconds or stop it  |\n");
     printf(" |                                                               |\n");
-    printf(" =================================================================\n\n");
+    printf(" =================================================================\n\n"); */
    /*  xTaskCreate(current_thread, "current_thread", 4095, NULL, 5, NULL); */
     
     /* position_struct=&position_struct1; */
@@ -174,16 +173,16 @@ void app_main(void)
 
     xTaskCreate(class_thread, "class_thread", 4095, class_struct, 5, NULL);
 
-    /* xTaskCreate(power_thread, "power_thread", 4095, NULL, 5, NULL); */
-
+    xTaskCreate(power_thread, "power_thread", 4095, NULL, 5, NULL);
     printf("g_adc_offset:%d\n",g_adc_offset);
     while(1){
         printf("class.enc_error:%d\n",class_struct1.enc_error);
         printf("class.class_cnt:%d\n",class_struct1.class_cnt);
         printf("class.degree_cnt:%d\n",class_struct1.degree_cnt);
-        /* printf("i_error:%f\n",i_error);
+      
+        printf("i_error:%f\n",i_error);
 
-        printf("u:%f\n",u); */
+        printf("u:%f\n",u);
         vTaskDelay(1000/portTICK_RATE_MS);
         
     }
@@ -225,9 +224,8 @@ void class_thread(struct class_handle *class_struct){
     while(1){
         PysbMotorPositionSampling();
         PysbMotorClassPositionSet(class_struct);
-    
-
-        /* xQueueSend(position_queue, &i_target, portMAX_DELAY); */
+        PysbMotorClassPositionControl(class_struct);
+        xQueueSend(position_queue, &i_target, portMAX_DELAY);
     }
     
 }
@@ -269,14 +267,15 @@ inline void PysbMotorClassPositionSet(struct class_handle * class_struct){
     if((*class_struct).motor_position_status==4){
         (* class_struct).motor_class_status=4;
     }
-    else if((*class_struct).motor_position_status>0){
+    else if((*class_struct).motor_position_status==1){
         (* class_struct).motor_class_status=1;
-        (* class_struct).class_cnt=_enc_error/(*class_struct).class_range;
+        (* class_struct).class_cnt=_enc_error/(*class_struct).class_range;   
     }//正转
-    else if((*class_struct).motor_position_status<0){
+    else if((*class_struct).motor_position_status==2){
         (* class_struct).motor_class_status=2;
         (* class_struct).class_cnt=_enc_error/(*class_struct).class_range-1;
     }//enc_cnt<0，反转
+
     
     (* class_struct).degree_cnt=enc_cnt-(* class_struct).class_cnt*(*class_struct).class_range;
 }
@@ -292,7 +291,7 @@ void PysbMotorPositionControl(struct position_handle *position_struct){
             i_target=0;;
         }
          else if((*position_struct).pos_error>22&&(*position_struct).pos_error<500){
-            i_target=k2*((*position_struct).pos_error-22)+0.53;
+            i_target=k2*(-(*position_struct).pos_error-22)+0.53;
         }
         else if((*position_struct).pos_error<15&&(*position_struct).pos_error>=-22){
             i_target=0;;
@@ -301,15 +300,42 @@ void PysbMotorPositionControl(struct position_handle *position_struct){
             i_target=0;
         }
         else if((*position_struct).pos_error<-22&&(*position_struct).pos_error>-500){
-            i_target=k2*((*position_struct).pos_error+22)-0.53;
+            i_target=k2*(-(*position_struct).pos_error+22)-0.53;
         }
         else if((*position_struct).pos_error==0){
             i_target=0;
         }
         else{
-            i_target=(((float)(*position_struct).pos_error/(float)HALF_CLASS))*1.5f;
+            i_target=(-((float)(*position_struct).pos_error/(float)HALF_CLASS))*1.5f;
         }
+}
 
+void PysbMotorClassPositionControl(struct class_handle * class_struct){
+
+        if((* class_struct).degree_cnt>15&&(* class_struct).degree_cnt<=22){
+            i_target=0;
+        }
+        else if((* class_struct).degree_cnt>0&&(* class_struct).degree_cnt<=15){
+            i_target=0;;
+        }
+         else if((* class_struct).degree_cnt>22&&(* class_struct).degree_cnt<500){
+            i_target=k2*(-(* class_struct).degree_cnt-22)+0.53;
+        }
+        else if((* class_struct).degree_cnt<15&&(* class_struct).degree_cnt>=-22){
+            i_target=0;
+        }
+        else if((* class_struct).degree_cnt<0&&(* class_struct).degree_cnt>=-15){
+            i_target=0;
+        }
+        else if((* class_struct).degree_cnt<-22&&(* class_struct).degree_cnt>-500){
+            i_target=k2*(-(* class_struct).degree_cnt+22)-0.53;
+        }
+        else if((* class_struct).degree_cnt==0){
+            i_target=0;
+        }
+        else{
+            i_target=(-((float)(* class_struct).degree_cnt/(float)HALF_CLASS))*1.5f;
+        }
 }
 
 /* ------------------------------------------------------------------------------------------------*/
