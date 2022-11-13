@@ -15,8 +15,11 @@
 #include "rotary_encoder.h"
 #include <math.h>
 
+enum{
+    origin, speed, position, class
+}motor_mode;
 /**
- * @brief 实现转动角度控制的结构体* 
+ * @brief 实现转动到指定角度控制的结构体* 
  */
 struct position_handle{
     int16_t angle;//设定转动角度，angle=0可以实现复位
@@ -75,7 +78,7 @@ int16_t enc_cnt;//目前的脉冲数
     #define DELAY_MS 10
     #define PARA_ENCODER 14.28f //(DELAY_HZ)100*2pi/44 11线编码器
 
-/* static void position_isr(void *arg); */
+
 static void pwm_isr(void *arg);
 /* static void current_thread(void *arg); */
 static void power_thread(void *arg);
@@ -96,6 +99,7 @@ void PysbMotorSpeedControl();
 
 QueueHandle_t power_queue;
 QueueHandle_t position_queue;
+QueueHandle_t class_queue;
 /* QueueHandle_t distence_queue; */
 int32_t g_adc_offset; 
 
@@ -146,39 +150,34 @@ inline void PysbMotorInitA(){
 
     power_queue = xQueueCreate(1, sizeof(int32_t));
     position_queue = xQueueCreate(1, sizeof(float));
+    class_queue = xQueueCreate(1, sizeof(float));
 
     MCPWM0.int_ena.val = MCPWM_TIMER0_TEZ_INT_ENA;
     mcpwm_isr_register(MCPWM_UNIT_0, pwm_isr, NULL, ESP_INTR_FLAG_IRAM, NULL);
 }
 
 inline void PysbMotorInitB(){
-    struct position_handle position_struct1={
-        .angle=180,
-    };
+    motor_mode=3;
 }
 
 void app_main(void)
 {
     PysbMotorInit();
-
-   /*  printf("\n =================================================================\n");
-    printf(" |             Example of Motor Control                          |\n");
-    printf(" |                                                               |\n");
-    printf(" |  1. Try 'help', check all supported commands                  |\n");
-    printf(" |  2. Try 'config' to set control period or pwm frequency       |\n");
-    printf(" |  3. Try 'pid' to configure pid paremeters                     |\n");
-    printf(" |  4. Try 'expt' to set expectation value and mode              |\n");
-    printf(" |  5. Try 'motor' to start motor in several seconds or stop it  |\n");
-    printf(" |                                                               |\n");
-    printf(" =================================================================\n\n"); */
-   /*  xTaskCreate(current_thread, "current_thread", 4095, NULL, 5, NULL); */
+    switch (motor_mode)
+            {
+            case class:
+                class_struct=&class_struct1;
+                xTaskCreate(class_thread, "class_thread", 4095, class_struct, 5, NULL);
+                break;
+            
+            case position:
+                position_struct=&position_struct1;
+                xTaskCreate(position_thread, "position_thread", 4095, position_struct, 5, NULL);
+                break;
+            default:
+                break;
+            }
     
-    /* position_struct=&position_struct1; */
-    class_struct=&class_struct1;
-    /* xTaskCreate(position_thread, "position_thread", 4095, position_struct, 5, NULL); */
-
-    xTaskCreate(class_thread, "class_thread", 4095, class_struct, 5, NULL);
-
     xTaskCreate(power_thread, "power_thread", 4095, NULL, 5, NULL);
     printf("g_adc_offset:%d\n",g_adc_offset);
     while(1){
@@ -231,7 +230,7 @@ void class_thread(struct class_handle *class_struct){
         PysbMotorPositionSampling();
         PysbMotorClassPositionSet(class_struct);
         PysbMotorClassPositionControl(class_struct);
-        xQueueSend(position_queue, &i_target, portMAX_DELAY);
+        xQueueSend(class_queue, &i_target, portMAX_DELAY);
     }
     
 }
@@ -343,7 +342,47 @@ void PysbMotorClassPositionControl(struct class_handle * class_struct){
             i_target=(-((float)(* class_struct).degree_cnt/(float)HALF_CLASS))*1.5f;
         }
 }
+void power_thread(void *arg)
+{
+    TickType_t xLastWakeTime;
+    xLastWakeTime = xTaskGetTickCount();
+    float raw_val;
+    float i_target;
+    //
+    while (1) {
+        if (xQueueReceive(power_queue, &raw_val, portMAX_DELAY) == pdTRUE)
+        {
+            switch (motor_mode)
+            {
+            case class:
+                xQueueReceive(class_queue,&i_target,portMAX_DELAY);
+                break;
+            
+            case position:
+                xQueueReceive(position_queue,&i_target,portMAX_DELAY);
+                break;
+            default:
+                break;
+            }
+            
+            i_current = (float)(raw_val) * 0.000634921f;	//raw_val to current(A);
+            i_error = i_target - i_current;
+            /* if(i_error<0&&i_error>-0.53f){i_error=-0.30;}
+            if(i_error>0&&i_error<0.53){i_error=0.30;} */
+            u =8*i_error;//P=9.5425f,I=2.3762
+            if (u > 4.99f){
+                u = 4.99f;
+            }
+            if (u < -4.99f){
+                u = -4.99f;
+            }//Attention! when doing position contorl Starting voltage of DC motor
+            mcpwm_set_duty(MCPWM_UNIT_0, MCPWM_TIMER_0, MCPWM_GEN_A, (1 - (u + 5.0f) / 10.0f) * 100);
+            mcpwm_set_duty(MCPWM_UNIT_0, MCPWM_TIMER_0, MCPWM_GEN_B, (u + 5.0f) / 10.0f * 100);
 
+            vTaskDelayUntil(&xLastWakeTime, DELAY_MS/ portTICK_PERIOD_MS);
+        }
+    }
+}
 /* ------------------------------------------------------------------------------------------------*/
 
 inline void PysbMotorSpeedSampling(){
@@ -404,33 +443,3 @@ void PysbMotorSpeedControl(){
         
 }
 
-
-void power_thread(void *arg)
-{
-    TickType_t xLastWakeTime;
-    xLastWakeTime = xTaskGetTickCount();
-    float raw_val;
-    float i_target;
-    //
-    while (1) {
-        if (xQueueReceive(power_queue, &raw_val, portMAX_DELAY) == pdTRUE)
-        {
-            xQueueReceive(position_queue,&i_target,portMAX_DELAY);
-            i_current = (float)(raw_val) * 0.000634921f;	//raw_val to current(A);
-            i_error = i_target - i_current;
-            /* if(i_error<0&&i_error>-0.53f){i_error=-0.30;}
-            if(i_error>0&&i_error<0.53){i_error=0.30;} */
-            u =8*i_error;//P=9.5425f,I=2.3762
-            if (u > 4.99f){
-                u = 4.99f;
-            }
-            if (u < -4.99f){
-                u = -4.99f;
-            }//Attention! when doing position contorl Starting voltage of DC motor
-            mcpwm_set_duty(MCPWM_UNIT_0, MCPWM_TIMER_0, MCPWM_GEN_A, (1 - (u + 5.0f) / 10.0f) * 100);
-            mcpwm_set_duty(MCPWM_UNIT_0, MCPWM_TIMER_0, MCPWM_GEN_B, (u + 5.0f) / 10.0f * 100);
-
-            vTaskDelayUntil(&xLastWakeTime, DELAY_MS/ portTICK_PERIOD_MS);
-        }
-    }
-}
